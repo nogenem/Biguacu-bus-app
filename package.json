@@ -5,6 +5,7 @@
   "scripts": {
     "start": "react-native start",
     "android": "react-native run-android",
+    "log:android": "react-native log-android",
     "ios": "react-native run-ios",
     "test": "node node_modules/jest/bin/jest.js --watch"
   },
@@ -14,6 +15,7 @@
   "dependencies": {
     "react": "16.0.0",
     "react-native": "^0.52.0",
+    "react-native-tab-view": "^0.0.74",
     "react-redux": "^5.0.6",
     "redux": "^3.7.2",
     "redux-thunk": "^2.2.0"
