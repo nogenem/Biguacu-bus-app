@@ -1,3 +1,4 @@
-import { AppRegistry } from 'react-native';
-import App from './App';
-AppRegistry.registerComponent('Biguacubusapp', () => App);
+import { AppRegistry } from "react-native";
+import Main from "./src/index";
+
+AppRegistry.registerComponent("Biguacubusapp", () => Main);
