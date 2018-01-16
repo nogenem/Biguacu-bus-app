@@ -26,6 +26,7 @@ MERGED from [com.facebook.react:react-native:0.52.0] E:\Programacao\Git\Biguacu-
 		ADDED from E:\Programacao\Git\Biguacu-bus-app\android\app\src\main\AndroidManifest.xml:7:22-75
 uses-sdk
 ADDED from E:\Programacao\Git\Biguacu-bus-app\android\app\src\main\AndroidManifest.xml:9:5-11:41
+MERGED from [Biguacubusapp:react-native-sqlite-storage:unspecified] E:\Programacao\Git\Biguacu-bus-app\android\app\build\intermediates\exploded-aar\Biguacubusapp\react-native-sqlite-storage\unspecified\AndroidManifest.xml:7:5-9:41
 MERGED from [com.facebook.react:react-native:0.52.0] E:\Programacao\Git\Biguacu-bus-app\android\app\build\intermediates\exploded-aar\com.facebook.react\react-native\0.52.0\AndroidManifest.xml:7:5-9:41
 MERGED from [com.android.support:appcompat-v7:23.0.1] E:\Programacao\Git\Biguacu-bus-app\android\app\build\intermediates\exploded-aar\com.android.support\appcompat-v7\23.0.1\AndroidManifest.xml:20:5-43
 MERGED from [com.android.support:support-v4:23.0.1] E:\Programacao\Git\Biguacu-bus-app\android\app\build\intermediates\exploded-aar\com.android.support\support-v4\23.0.1\AndroidManifest.xml:20:5-43

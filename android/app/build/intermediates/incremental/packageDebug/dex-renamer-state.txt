@@ -1,4 +1,4 @@
-#Sat Jan 13 16:50:31 BRST 2018
+#Tue Jan 16 14:50:58 BRST 2018
 base.0=E\:\\Programacao\\Git\\Biguacu-bus-app\\android\\app\\build\\intermediates\\transforms\\dex\\debug\\folders\\1000\\1f\\main
 renamed.0=classes.dex
 file.0=E\:\\Programacao\\Git\\Biguacu-bus-app\\android\\app\\build\\intermediates\\transforms\\dex\\debug\\folders\\1000\\1f\\main\\classes.dex

@@ -6,13 +6,19 @@ import { colors } from "./constants/styles";
 import store from "./store";
 import App from "./App";
 
+import DBManager from "./utils/DBManager";
+
 class Main extends Component {
+  componentWillMount() {
+    DBManager.loadDB();
+  }
+
   render() {
     return (
       <Provider store={store}>
         <View style={styles.container}>
           <StatusBar
-            backgroundColor={colors.primary_dark}
+            backgroundColor={colors.primary}
             barStyle="light-content"
           />
           <App />

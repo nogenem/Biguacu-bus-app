@@ -15,6 +15,7 @@
   "dependencies": {
     "react": "16.0.0",
     "react-native": "^0.52.0",
+    "react-native-sqlite-storage": "^3.3.4",
     "react-native-tab-view": "^0.0.74",
     "react-redux": "^5.0.6",
     "redux": "^3.7.2",
