@@ -65,7 +65,6 @@ export default class DBManager {
     return DBManager.executeSQL(query, data).then(resp => {
       const items = [];
       if (!resp || !resp.rows) return items;
-
       for (let i = 0; i < resp.rows.length; i++) {
         items.push(resp.rows.item(i));
       }

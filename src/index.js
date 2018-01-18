@@ -6,7 +6,7 @@ import { colors } from "./constants/styles";
 import store from "./store";
 import App from "./App";
 
-import DBManager from "./utils/DBManager";
+import DBManager from "./database/DBManager";
 
 class Main extends Component {
   componentWillMount() {
