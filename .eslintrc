@@ -28,7 +28,7 @@
   "rules": {
     "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
     "react/prefer-stateless-function": [0],
-    "no-underscore-dangle": [1, { "allow": ["_id"] }],
+    "no-underscore-dangle": [1, { "allow": ["_id", "_bodyText"] }],
     "no-use-before-define": "off",
     "no-plusplus": ["error", { "allowForLoopAfterthoughts": true }]
   }

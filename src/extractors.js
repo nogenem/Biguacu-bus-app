@@ -1,0 +1,116 @@
+import cheerio from "cheerio-without-node-native";
+
+import { fetchRoutes, fetchRoute } from "./api";
+
+const getText = (node, idx = 0, slice = 0) =>
+  node
+    .eq(idx)
+    .text()
+    .slice(slice)
+    .trim();
+
+const extractRoutes = resp => {
+  if (resp.status >= 300) return [];
+
+  const html = String(resp._bodyText);
+  if (html.indexOf('<tbody id="contentGridSearchLine">') === -1) return [];
+
+  const $ = cheerio.load(html);
+  const ret = {};
+
+  $("table > tbody > tr").each((_, tr) => {
+    const tds = $("td", tr);
+    const cod = parseInt(getText(tds, 0), 10);
+    if (tds[1].text !== "")
+      ret[cod] = {
+        cod,
+        nome: getText(tds, 1),
+        obs: getText(tds, 3)
+      };
+  });
+  return ret;
+};
+
+export const getRoutes = async () => {
+  const responses = await Promise.all([fetchRoutes(1), fetchRoutes(3)]);
+  return { ...extractRoutes(responses[0]), ...extractRoutes(responses[1]) };
+};
+
+const extractRoute = (resp, updatedAt) => {
+  const ret = {};
+
+  if (resp.status >= 300) return ret;
+
+  const html = String(resp._bodyText);
+  if (html.indexOf('<div class="cabecalho-linha" id="contentInfo">') === -1)
+    return ret;
+
+  const $ = cheerio.load(html);
+
+  // detalhes
+  const contentInfoDivs = $("#contentInfo > div");
+
+  // retira: "Última atualização:"
+  const lastUpdate = getText(contentInfoDivs, 1, 19);
+  if (lastUpdate === updatedAt) return ret;
+
+  ret.updatedAt = lastUpdate;
+  // retira: "Tempo de viagem:"
+  ret.tempo = getText(contentInfoDivs, 4, 16);
+  // retira: "Tarifa:"
+  ret.preco = `R$ ${getText(contentInfoDivs, 6, 7)}`;
+
+  // horarios
+  ret.data = [];
+  // TODO: melhorar essa parte!?
+  $("#tabContent1 > div").each((a, div) => {
+    const data = {};
+    const subDivs1 = $(div).children("div");
+
+    data.saida = subDivs1
+      .eq(0)
+      .find("> div > strong")
+      .text()
+      .trim();
+    data.weekdays = [];
+
+    subDivs1
+      .eq(1)
+      .find("> ul > li")
+      .each((b, li1) => {
+        const subDivs2 = $(li1).children("div");
+
+        let dia = subDivs2
+          .eq(0)
+          .find("> strong")
+          .text()
+          .trim();
+        if (dia.indexOf("Segunda") > -1) dia = "Semana";
+        else if (dia.indexOf("feriados") > -1) dia = "Domingo";
+
+        data.weekdays[b] = { dia, schedule: [] };
+
+        subDivs2
+          .eq(1)
+          .find("> ul > li")
+          .each((c, li2) => {
+            const hora = $(li2)
+              .text()
+              .trim();
+            if (hora) {
+              if (hora.indexOf("24:") > -1) hora.replace("24:", "00:");
+              data.weekdays[b].schedule.push(hora);
+            }
+          });
+      });
+
+    ret.data.push(data);
+  });
+
+  return ret;
+};
+
+export const getRoute = async (cod, updatedAt) => {
+  const resp = await fetchRoute(cod);
+  return extractRoute(resp, updatedAt);
+};
