@@ -15,8 +15,10 @@
   "dependencies": {
     "cheerio-without-node-native": "^0.20.2",
     "native-base": "^2.3.6",
+    "prop-types": "^15.6.0",
     "react": "16.0.0",
     "react-native": "^0.52.0",
+    "react-native-loading-spinner-overlay": "^0.5.2",
     "react-native-sqlite-storage": "^3.3.4",
     "react-native-tab-view": "^0.0.74",
     "react-redux": "^5.0.6",

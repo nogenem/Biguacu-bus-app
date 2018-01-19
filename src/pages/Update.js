@@ -1,5 +1,7 @@
 import React, { Component } from "react";
-import { StyleSheet } from "react-native";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import { StyleSheet, NetInfo, Alert } from "react-native";
 import {
   Container,
   Content,
@@ -9,50 +11,55 @@ import {
   Text,
   Button
 } from "native-base";
-import { getAllUpdatedAt, updateAll } from "../database/lines";
-import { getLines, getLine } from "../extractors";
+import Spinner from "react-native-loading-spinner-overlay";
+
+import { updateLines } from "../actions/lines";
+import { colors } from "../constants/styles";
+import handleErrors from "../utils/handleErrors";
 
 class Update extends Component {
-  // TODO: transformar em action e perguntar antes se tem certeza/verificar conexão
+  state = {
+    loading: false
+  };
+
   update = async () => {
+    this.setState({ loading: true });
     try {
-      const oldData = await getAllUpdatedAt();
-      const lines = await getLines();
-      const lists = {
-        toUpdate: [],
-        toAdd: [],
-        toDelete: []
-      };
-
-      await Promise.all(
-        Object.values(lines).map(async line => {
-          const old = oldData[line.cod] || {};
-          let data = await getLine(line.cod, old.updated_at);
-          if (data.updated_at) {
-            data = { ...data, ...line };
-
-            if (oldData[line.cod]) {
-              lists.toUpdate.push(data);
-              delete oldData[line.cod];
-            } else {
-              lists.toAdd.push(data);
-            }
-          } else if (oldData[line.cod]) {
-            delete oldData[line.cod];
-          }
-        })
+      const lists = await this.props.updateLines();
+      Alert.alert(
+        "Resultado da atualização",
+        `${lists.toAdd} linha(s) adicinada(s);\n` +
+          `${lists.toUpdate} linha(s) atualizada(s);\n` +
+          `${lists.toDelete} linha(s) deletada(s).`
       );
-
-      const remainingKeys = Object.keys(oldData);
-      if (remainingKeys.length > 0) lists.toDelete = remainingKeys;
-
-      await updateAll(lists);
-      console.log(`${lists.toAdd.length} linha(s) adicinada(s).`);
-      console.log(`${lists.toUpdate.length} linha(s) atualizada(s).`);
-      console.log(`${lists.toDelete.length} linha(s) deletada(s).`);
     } catch (err) {
-      // TODO: melhorar tratamento de erro
-      console.log("ERR: ", err);
+      handleErrors(err);
+    }
+    this.setState({ loading: false });
+  };
+
+  checkConnection = async () => {
+    try {
+      const { type } = await NetInfo.getConnectionInfo();
+      if (type === "none")
+        Alert.alert(
+          "Sem conexão",
+          "É necessário estar conectado para poder executar esta operação."
+        );
+      else if (!type || type === "unknown")
+        Alert.alert(
+          "Sem conexão?",
+          "Não foi possível detectar o tipo da sua conexão.\nPor favor tente novamente mais tarde."
+        );
+      else if (!["wifi", "ethernet"].includes(type))
+        Alert.alert(
+          "Conexão impropria",
+          "Recomendamos a utilização de wi-fi para esta operação.\nDeseja continuar mesmo assim?",
+          [{ text: "Ok", onPress: this.update }, { text: "Cancelar" }]
+        );
+      else this.update();
+    } catch (err) {
+      handleErrors(err);
     }
   };
 
@@ -60,6 +67,12 @@ class Update extends Component {
     return (
       <Container>
         <Content>
+          <Spinner
+            visible={this.state.loading}
+            textContent="Carregando..."
+            color={colors.primary_light}
+            textStyle={styles.spinner_text}
+          />
           <Card>
             <CardItem header bordered>
               <Text>Update</Text>
@@ -77,7 +90,7 @@ class Update extends Component {
                   success
                   block
                   style={styles.margin_top}
-                  onPress={this.update}
+                  onPress={this.checkConnection}
                 >
                   <Text>Atualizar</Text>
                 </Button>
@@ -90,10 +103,19 @@ class Update extends Component {
   }
 }
 
+Update.propTypes = {
+  // mapDispatchToProps
+  updateLines: PropTypes.func.isRequired
+};
+
 const styles = StyleSheet.create({
   margin_top: {
     marginTop: 10
+  },
+  spinner_text: {
+    color: colors.primary_light
   }
 });
 
-export default Update;
+export const UnconnectedUpdate = Update;
+export default connect(null, { updateLines })(Update);
