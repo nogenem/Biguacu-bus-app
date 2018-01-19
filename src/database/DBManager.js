@@ -77,17 +77,19 @@ export default class DBManager {
   }
 
   static addQueries(queries) {
-    DBManager._queries = [...DBManager._queries, ...queries];
+    if (Array.isArray(queries) && queries.length > 0) {
+      DBManager._queries = [...DBManager._queries, ...queries];
+    }
   }
 
   static executePendingQueries() {
-    if (!DBManager._queries.length) return Promise.resolve();
     if (!DBManager.isOpened()) {
       if (!DBManager.isOpening()) DBManager.loadDB();
       return DBManager._openingPromise.then(() =>
         DBManager.executePendingQueries()
       );
     }
+    if (!DBManager._queries.length) return Promise.resolve();
     return DBManager._db.sqlBatch(DBManager._queries).then(() => {
       DBManager._queries = [];
     });

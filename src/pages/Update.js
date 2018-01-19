@@ -27,13 +27,18 @@ class Update extends Component {
       await Promise.all(
         Object.values(routes).map(async route => {
           const old = oldData[route.cod] || {};
-          const data = await getRoute(route.cod, old.updatedAt);
+          let data = await getRoute(route.cod, old.updated_at);
+          if (data.updated_at) {
+            data = { ...data, ...route };
 
-          if (oldData[route.cod]) {
-            lists.toUpdate.push(data);
+            if (oldData[route.cod]) {
+              lists.toUpdate.push(data);
+              delete oldData[route.cod];
+            } else {
+              lists.toAdd.push(data);
+            }
+          } else if (oldData[route.cod]) {
             delete oldData[route.cod];
-          } else {
-            lists.toAdd.push(data);
           }
         })
       );
@@ -42,6 +47,9 @@ class Update extends Component {
       if (remainingKeys.length > 0) lists.toDelete = remainingKeys;
 
       await updateAll(lists);
+      console.log(`${lists.toAdd.length} linha(s) adicinada(s).`);
+      console.log(`${lists.toUpdate.length} linha(s) atualizada(s).`);
+      console.log(`${lists.toDelete.length} linha(s) deletada(s).`);
     } catch (err) {
       // TODO: melhorar tratamento de erro
       console.log("ERR: ", err);

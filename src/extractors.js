@@ -1,3 +1,4 @@
+/* eslint camelcase: 0 */
 import cheerio from "cheerio-without-node-native";
 
 import { fetchRoutes, fetchRoute } from "./api";
@@ -36,7 +37,7 @@ export const getRoutes = async () => {
   return { ...extractRoutes(responses[0]), ...extractRoutes(responses[1]) };
 };
 
-const extractRoute = (resp, updatedAt) => {
+const extractRoute = (resp, updated_at) => {
   const ret = {};
 
   if (resp.status >= 300) return ret;
@@ -52,9 +53,9 @@ const extractRoute = (resp, updatedAt) => {
 
   // retira: "Última atualização:"
   const lastUpdate = getText(contentInfoDivs, 1, 19);
-  if (lastUpdate === updatedAt) return ret;
+  if (lastUpdate === updated_at) return ret;
 
-  ret.updatedAt = lastUpdate;
+  ret.updated_at = lastUpdate;
   // retira: "Tempo de viagem:"
   ret.tempo = getText(contentInfoDivs, 4, 16);
   // retira: "Tarifa:"
@@ -110,7 +111,7 @@ const extractRoute = (resp, updatedAt) => {
   return ret;
 };
 
-export const getRoute = async (cod, updatedAt) => {
+export const getRoute = async (cod, updated_at) => {
   const resp = await fetchRoute(cod);
-  return extractRoute(resp, updatedAt);
+  return extractRoute(resp, updated_at);
 };
