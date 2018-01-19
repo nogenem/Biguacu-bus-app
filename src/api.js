@@ -1,4 +1,4 @@
-export const fetchRoutes = company =>
+export const fetchLines = company =>
   fetch("http://www.biguacutransportes.com.br/ajax/lineBus/searchGetLine", {
     method: "POST",
     headers: {
@@ -7,7 +7,7 @@ export const fetchRoutes = company =>
     body: `order=DESC&company=${company}`
   });
 
-export const fetchRoute = cod =>
+export const fetchLine = cod =>
   fetch(
     `http://www.biguacutransportes.com.br/ajax/lineBus/preview/?line=${cod}&detail[]=1,2,3`
   );

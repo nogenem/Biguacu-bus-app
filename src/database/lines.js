@@ -29,51 +29,37 @@ export const getAllNames = () =>
     resp => reshapeData(resp)
   );
 
-const getAddLinhaQueries = route => {
+const getAddLinhaQueries = line => {
   const queries = [];
   queries.push([
     ADD_LINHA,
-    [
-      route.cod,
-      route.nome,
-      route.obs,
-      route.preco,
-      route.tempo,
-      route.updated_at
-    ]
+    [line.cod, line.nome, line.obs, line.preco, line.tempo, line.updated_at]
   ]);
-  route.data.forEach(data => {
+  line.data.forEach(data => {
     const { saida } = data;
     data.weekdays.forEach(weekday => {
       const { dia } = weekday;
       weekday.schedule.forEach(hora => {
-        queries.push([ADD_HORARIO, [hora, saida, dia, route.cod]]);
+        queries.push([ADD_HORARIO, [hora, saida, dia, line.cod]]);
       });
     });
   });
   return queries;
 };
 
-const getUpdateLinhaQueries = route => {
+const getUpdateLinhaQueries = line => {
   const queries = [];
   queries.push([
     UPDATE_LINHA,
-    [
-      route.nome,
-      route.obs,
-      route.preco,
-      route.tempo,
-      route.updated_at,
-      route.cod
-    ]
+    [line.nome, line.obs, line.preco, line.tempo, line.updated_at, line.cod]
   ]);
-  queries.push([REMOVE_HORARIO_BY_COD, [route.cod]]);
-  route.data.forEach(data => {
+  queries.push([REMOVE_HORARIO_BY_COD, [line.cod]]);
+  line.data.forEach(data => {
     const { saida } = data;
     data.weekdays.forEach(weekday => {
       const { dia } = weekday;
       weekday.schedule.forEach(hora => {
-        queries.push([ADD_HORARIO, [hora, saida, dia, route.cod]]);
+        queries.push([ADD_HORARIO, [hora, saida, dia, line.cod]]);
       });
     });
   });
@@ -84,11 +70,11 @@ const getDeleteLinhaQueries = cod => [[REMOVE_LINHA_BY_COD, [cod]]];
 
 export const updateAll = lists => {
   let queries = [];
-  lists.toAdd.forEach(route => {
-    queries = [...queries, ...getAddLinhaQueries(route)];
+  lists.toAdd.forEach(line => {
+    queries = [...queries, ...getAddLinhaQueries(line)];
   });
-  lists.toUpdate.forEach(route => {
-    queries = [...queries, ...getUpdateLinhaQueries(route)];
+  lists.toUpdate.forEach(line => {
+    queries = [...queries, ...getUpdateLinhaQueries(line)];
   });
   lists.toDelete.forEach(cod => {
     queries = [...queries, ...getDeleteLinhaQueries(cod)];

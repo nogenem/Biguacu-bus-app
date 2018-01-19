@@ -1,7 +1,7 @@
 /* eslint camelcase: 0 */
 import cheerio from "cheerio-without-node-native";
 
-import { fetchRoutes, fetchRoute } from "./api";
+import { fetchLines, fetchLine } from "./api";
 
 const getText = (node, idx = 0, slice = 0) =>
   node
@@ -10,7 +10,7 @@ const getText = (node, idx = 0, slice = 0) =>
     .slice(slice)
     .trim();
 
-const extractRoutes = resp => {
+const extractLines = resp => {
   if (resp.status >= 300) return [];
 
   const html = String(resp._bodyText);
@@ -32,12 +32,12 @@ const extractRoutes = resp => {
   return ret;
 };
 
-export const getRoutes = async () => {
-  const responses = await Promise.all([fetchRoutes(1), fetchRoutes(3)]);
-  return { ...extractRoutes(responses[0]), ...extractRoutes(responses[1]) };
+export const getLines = async () => {
+  const responses = await Promise.all([fetchLines(1), fetchLines(3)]);
+  return { ...extractLines(responses[0]), ...extractLines(responses[1]) };
 };
 
-const extractRoute = (resp, updated_at) => {
+const extractLine = (resp, updated_at) => {
   const ret = {};
 
   if (resp.status >= 300) return ret;
@@ -111,7 +111,7 @@ const extractRoute = (resp, updated_at) => {
   return ret;
 };
 
-export const getRoute = async (cod, updated_at) => {
-  const resp = await fetchRoute(cod);
-  return extractRoute(resp, updated_at);
+export const getLine = async (cod, updated_at) => {
+  const resp = await fetchLine(cod);
+  return extractLine(resp, updated_at);
 };

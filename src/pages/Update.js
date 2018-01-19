@@ -9,15 +9,15 @@ import {
   Text,
   Button
 } from "native-base";
-import { getAllUpdatedAt, updateAll } from "../database/routes";
-import { getRoutes, getRoute } from "../extractors";
+import { getAllUpdatedAt, updateAll } from "../database/lines";
+import { getLines, getLine } from "../extractors";
 
 class Update extends Component {
   // TODO: transformar em action e perguntar antes se tem certeza/verificar conexão
   update = async () => {
     try {
       const oldData = await getAllUpdatedAt();
-      const routes = await getRoutes();
+      const lines = await getLines();
       const lists = {
         toUpdate: [],
         toAdd: [],
@@ -25,20 +25,20 @@ class Update extends Component {
       };
 
       await Promise.all(
-        Object.values(routes).map(async route => {
-          const old = oldData[route.cod] || {};
-          let data = await getRoute(route.cod, old.updated_at);
+        Object.values(lines).map(async line => {
+          const old = oldData[line.cod] || {};
+          let data = await getLine(line.cod, old.updated_at);
           if (data.updated_at) {
-            data = { ...data, ...route };
+            data = { ...data, ...line };
 
-            if (oldData[route.cod]) {
+            if (oldData[line.cod]) {
               lists.toUpdate.push(data);
-              delete oldData[route.cod];
+              delete oldData[line.cod];
             } else {
               lists.toAdd.push(data);
             }
-          } else if (oldData[route.cod]) {
-            delete oldData[route.cod];
+          } else if (oldData[line.cod]) {
+            delete oldData[line.cod];
           }
         })
       );
