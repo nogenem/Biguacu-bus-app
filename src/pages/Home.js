@@ -1,7 +1,7 @@
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 import { View, Text } from "react-native";
 
-class Home extends Component {
+class Home extends PureComponent {
   componentDidMount() {
     // load departures, if not loaded yet (!store.departures.isEmpty())
     // load data of default departure, if not loaded yet (!store.status["default departure"])

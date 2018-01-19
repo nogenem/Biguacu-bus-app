@@ -1,7 +1,7 @@
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 import { View, Text } from "react-native";
 
-class Search extends Component {
+class Search extends PureComponent {
   componentDidMount() {
     // load lines, { id, line_name }, 'not in [...Object.keys(state.lines)]',
     // if not loaded yet (!store.status.linesLoaded)

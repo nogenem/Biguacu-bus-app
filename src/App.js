@@ -3,7 +3,9 @@ import { StyleSheet, Dimensions } from "react-native";
 import { TabViewAnimated, TabBar, SceneMap } from "react-native-tab-view";
 
 import { colors } from "./constants/styles";
-import pages from "./pages";
+import Home from "./pages/Home";
+import Search from "./pages/Search";
+import Update from "./pages/Update";
 
 const INITIAL_LAYOUT = {
   height: 0,
@@ -30,11 +32,18 @@ class App extends React.PureComponent {
     />
   );
 
-  renderScene = SceneMap({
-    "1": pages.home,
-    "2": pages.search,
-    "3": pages.update
-  });
+  renderScene = ({ route }) => {
+    switch (route.key) {
+      case "1":
+        return <Home isVisible={this.state.index === 0} />;
+      case "2":
+        return <Search isVisible={this.state.index === 1} />;
+      case "3":
+        return <Update isVisible={this.state.index === 2} />;
+      default:
+        return null;
+    }
+  };
 
   render() {
     return (

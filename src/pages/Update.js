@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { StyleSheet, NetInfo, Alert } from "react-native";
@@ -17,7 +17,7 @@ import { updateLines } from "../actions/lines";
 import { colors } from "../constants/styles";
 import handleErrors from "../utils/handleErrors";
 
-class Update extends Component {
+class Update extends PureComponent {
   state = {
     loading: false
   };
@@ -89,6 +89,7 @@ class Update extends Component {
                 <Button
                   success
                   block
+                  disabled={this.state.loading}
                   style={styles.margin_top}
                   onPress={this.checkConnection}
                 >
