@@ -4,14 +4,16 @@ import { View, Text, StyleSheet } from "react-native";
 
 import { colors } from "../constants/styles";
 
+const getHeaderTitle = ({ nome, obs }) => (
+  <View>
+    <Text style={styles.headerTitle}>{nome}</Text>
+    {obs && <Text style={styles.headerSubtitle}>({obs})</Text>}
+  </View>
+);
+
 class Line extends PureComponent {
   static navigationOptions = props => ({
-    // apenas exemplo
-    headerTitle: (
-      <Text style={styles.headerTitle}>
-        Linha {props.navigation.state.params.cod}
-      </Text>
-    ),
+    headerTitle: getHeaderTitle(props.navigation.state.params),
     headerBackTitle: "Voltar",
     headerBackTitleStyle: { color: "white" },
     headerTintColor: "white",
@@ -29,7 +31,12 @@ class Line extends PureComponent {
 
 const styles = StyleSheet.create({
   headerTitle: {
-    fontSize: 20,
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "white"
+  },
+  headerSubtitle: {
+    fontSize: 12,
     fontWeight: "bold",
     color: "white"
   }
@@ -40,7 +47,9 @@ Line.propTypes = {
   navigation: PropTypes.shape({
     state: PropTypes.shape({
       params: PropTypes.shape({
-        cod: PropTypes.number
+        cod: PropTypes.number,
+        nome: PropTypes.string,
+        obs: PropTypes.string
       }).isRequired
     }).isRequired
   }).isRequired

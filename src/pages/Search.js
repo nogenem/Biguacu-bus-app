@@ -31,11 +31,21 @@ class Search extends PureComponent {
       this.setState({ lines: newProps.linesNames });
   }
 
-  onPressItem = (cod, nome) => {
-    this.props.navigation.navigate("Line", { cod, nome });
+  onPressItem = data => {
+    this.props.navigation.navigate("Line", data);
   };
 
-  onChangeText = newText => console.log("CHANGED: ", newText);
+  onChangeText = newText => {
+    const filter = newText.trim();
+    let lines = this.props.linesNames;
+
+    if (!filter) this.setState({ lines });
+
+    lines = lines.filter(line =>
+      `${line.nome} ${line.obs}`.toLowerCase().includes(filter)
+    );
+    this.setState({ lines });
+  };
 
   keyExtractor = line => line.cod;
 

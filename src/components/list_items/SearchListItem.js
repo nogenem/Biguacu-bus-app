@@ -5,8 +5,8 @@ import { ListItem } from "react-native-elements";
 
 class SearchListItem extends PureComponent {
   onPress = () => {
-    const { cod, nome } = this.props;
-    this.props.onPressItem(cod, nome);
+    const { cod, nome, obs } = this.props;
+    this.props.onPressItem({ cod, nome, obs });
   };
 
   render() {
