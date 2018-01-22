@@ -1,19 +1,34 @@
 import React, { PureComponent } from "react";
 import PropTypes from "prop-types";
+import { connect } from "react-redux";
 import { View, StyleSheet, FlatList } from "react-native";
 import { List, SearchBar } from "react-native-elements";
 
+import { loadLinesNameAndObs } from "../actions/lines";
+
+import { getLinesNameAndObs } from "../reducers/lines";
+import { getLinesLoaded } from "../reducers/status";
+
 import SearchListItem from "../components/list_items/SearchListItem";
+import handleErrors from "../utils/handleErrors";
 
 class Search extends PureComponent {
   state = {
-    lines: [{ cod: "1", nome: "Biguaçu" }, { cod: "2", nome: "Ceasa" }]
+    lines: []
   };
 
   componentDidMount() {
-    // load lines, { id, line_name }, 'not in [...Object.keys(state.lines)]',
-    // if not loaded yet (!store.status.linesLoaded)
-    //   para n carregar dados que ja fora carregados pela HOME
+    this.props.loadLinesNameAndObs().catch(err => handleErrors(err));
+  }
+
+  componentWillReceiveProps(newProps) {
+    if (this.props.linesLoaded && !newProps.linesLoaded) {
+      this.props.loadLinesNameAndObs().catch(err => handleErrors(err));
+      return;
+    }
+
+    if (this.props.linesNames !== newProps.linesNames)
+      this.setState({ lines: newProps.linesNames });
   }
 
   onPressItem = (cod, nome) => {
@@ -24,10 +39,11 @@ class Search extends PureComponent {
 
   keyExtractor = line => line.cod;
 
-  renderLine2 = line => (
+  renderLine2 = ({ item }) => (
     <SearchListItem
-      cod={line.item.cod}
-      nome={line.item.nome}
+      cod={item.cod}
+      nome={item.nome}
+      obs={item.obs}
       onPressItem={this.onPressItem}
     />
   );
@@ -58,7 +74,16 @@ Search.propTypes = {
   // ownProps
   navigation: PropTypes.shape({
     navigate: PropTypes.func
-  }).isRequired
+  }).isRequired,
+  linesLoaded: PropTypes.bool.isRequired,
+  linesNames: PropTypes.arrayOf(
+    PropTypes.shape({
+      cod: PropTypes.number,
+      nome: PropTypes.string
+    }).isRequired
+  ).isRequired,
+  // mapStateToProps
+  loadLinesNameAndObs: PropTypes.func.isRequired
 };
 
 const styles = StyleSheet.create({
@@ -70,4 +95,10 @@ const styles = StyleSheet.create({
   }
 });
 
-export default Search;
+const mapStateToProps = state => ({
+  linesLoaded: getLinesLoaded(state),
+  linesNames: getLinesNameAndObs(state)
+});
+
+export const UnconnectedSearch = Search;
+export default connect(mapStateToProps, { loadLinesNameAndObs })(Search);

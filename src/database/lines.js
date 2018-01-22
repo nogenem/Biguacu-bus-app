@@ -24,10 +24,10 @@ export const getAllUpdatedAt = () =>
     "select cod,updated_at from linha l ORDER BY l.nome ASC;"
   ).then(resp => reshapeData(resp));
 
-export const getAllNames = () =>
-  DBManager.getItems("select cod,nome from linha l ORDER BY l.nome ASC;").then(
-    resp => reshapeData(resp)
-  );
+export const getAllNameAndObs = () =>
+  DBManager.getItems(
+    "select cod,nome,obs from linha l ORDER BY l.nome ASC;"
+  ).then(resp => reshapeData(resp));
 
 const getAddLinhaQueries = line => {
   const queries = [];

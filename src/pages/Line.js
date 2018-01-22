@@ -40,7 +40,7 @@ Line.propTypes = {
   navigation: PropTypes.shape({
     state: PropTypes.shape({
       params: PropTypes.shape({
-        cod: PropTypes.string
+        cod: PropTypes.number
       }).isRequired
     }).isRequired
   }).isRequired

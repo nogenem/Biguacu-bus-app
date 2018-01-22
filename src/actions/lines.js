@@ -1,9 +1,18 @@
-import { getAllUpdatedAt, updateAll } from "../database/lines";
+import {
+  getAllUpdatedAt,
+  updateAll,
+  getAllNameAndObs
+} from "../database/lines";
 import { getLines, getLine } from "../extractors";
-import { LINES_UPDATED } from "../constants/types";
+import { LINES_UPDATED, LINES_NAME_OBS_LOADED } from "../constants/types";
 
 const linesUpdated = () => ({
   type: LINES_UPDATED
+});
+
+const linesNameAndObsLoaded = data => ({
+  type: LINES_NAME_OBS_LOADED,
+  data
 });
 
 export const updateLines = () => async dispatch => {
@@ -45,3 +54,6 @@ export const updateLines = () => async dispatch => {
     toDelete: lists.toDelete.length
   };
 };
+
+export const loadLinesNameAndObs = () => dispatch =>
+  getAllNameAndObs().then(data => dispatch(linesNameAndObsLoaded(data)));
