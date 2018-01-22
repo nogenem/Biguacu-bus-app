@@ -1,16 +1,8 @@
 import React, { PureComponent } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { StyleSheet, NetInfo, Alert } from "react-native";
-import {
-  Container,
-  Content,
-  Card,
-  CardItem,
-  Body,
-  Text,
-  Button
-} from "native-base";
+import { View, Text, StyleSheet, NetInfo, Alert } from "react-native";
+import { Card, Button } from "react-native-elements";
 import Spinner from "react-native-loading-spinner-overlay";
 
 import { updateLines } from "../actions/lines";
@@ -65,41 +57,32 @@ class Update extends PureComponent {
 
   render() {
     return (
-      <Container>
-        <Content>
-          <Spinner
-            visible={this.state.loading}
-            textContent="Carregando..."
-            color={colors.primary_light}
-            textStyle={styles.spinner_text}
+      <View style={styles.container}>
+        <Spinner
+          visible={this.state.loading}
+          textContent="Carregando..."
+          color={colors.primary}
+          textStyle={styles.spinner_text}
+        />
+        <Card title="Update">
+          <Text>
+            Esta opção atualizará o banco de dados de horários do APP.
+          </Text>
+          <Text>Isto pode levar alguns minutos.</Text>
+          <Text style={styles.last_text}>
+            Recomendamos fazer isto uma vez por mês!
+          </Text>
+          <Button
+            icon={icons.button}
+            backgroundColor={colors.primary_dark}
+            buttonStyle={styles.button}
+            fontWeight="bold"
+            title="Atualizar"
+            disabled={this.state.loading}
+            onPress={this.checkConnection}
           />
-          <Card>
-            <CardItem header bordered>
-              <Text>Update</Text>
-            </CardItem>
-            <CardItem>
-              <Body>
-                <Text>
-                  Esta opção atualizará o banco de dados de horários do APP.
-                </Text>
-                <Text>Isto pode levar alguns minutos.</Text>
-                <Text style={styles.margin_top}>
-                  Recomendamos fazer isto uma vez por mês!
-                </Text>
-                <Button
-                  success
-                  block
-                  disabled={this.state.loading}
-                  style={styles.margin_top}
-                  onPress={this.checkConnection}
-                >
-                  <Text>Atualizar</Text>
-                </Button>
-              </Body>
-            </CardItem>
-          </Card>
-        </Content>
-      </Container>
+        </Card>
+      </View>
     );
   }
 }
@@ -109,12 +92,25 @@ Update.propTypes = {
   updateLines: PropTypes.func.isRequired
 };
 
+const icons = {
+  button: {
+    name: "autorenew"
+  }
+};
+
 const styles = StyleSheet.create({
-  margin_top: {
+  container: {
+    flex: 1
+  },
+  last_text: {
+    marginTop: 10,
+    fontWeight: "bold"
+  },
+  button: {
     marginTop: 10
   },
   spinner_text: {
-    color: colors.primary_light
+    color: colors.primary
   }
 });
 
