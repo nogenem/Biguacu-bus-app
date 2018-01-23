@@ -20,11 +20,11 @@ class Line extends PureComponent {
     const { state, setParams } = props.navigation;
     const { params } = state;
     return {
-      headerTitle: HeaderTitle(params),
+      headerTitle: <HeaderTitle nome={params.nome} obs={params.obs} />,
       headerBackTitle: "Voltar",
-      headerBackTitleStyle: { color: "white" },
+      headerBackTitleStyle: styles.headerBackTitle,
       headerTintColor: "white",
-      headerStyle: { backgroundColor: colors.primary },
+      headerStyle: styles.header,
       headerRight: <LineHeaderIcon setParams={setParams} mode={params.mode} />
     };
   };
@@ -33,9 +33,9 @@ class Line extends PureComponent {
     dataIndex: 0,
     // test data
     line: {
-      cod: "123",
-      nome: "Biguaçu",
-      obs: "",
+      cod: "12400",
+      nome: "SHOPPING CENTER ITAGUACU",
+      obs: "VIA ESTREITO",
       updated_at: "15/01/2018",
       tempo: "35 minutos",
       preco: "R$ 3,50",
@@ -104,6 +104,8 @@ class Line extends PureComponent {
 }
 
 const styles = StyleSheet.create({
+  header: { backgroundColor: colors.primary },
+  headerBackTitle: { color: "white" },
   headerTitle: {
     fontSize: 16,
     fontWeight: "bold",
@@ -135,6 +137,11 @@ const styles = StyleSheet.create({
     fontSize: 18
   }
 });
+
+HeaderTitle.propTypes = {
+  nome: PropTypes.string.isRequired,
+  obs: PropTypes.string.isRequired
+};
 
 Line.propTypes = {
   // ownProps
