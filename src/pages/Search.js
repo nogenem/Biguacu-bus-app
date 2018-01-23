@@ -32,7 +32,7 @@ class Search extends PureComponent {
   }
 
   onPressItem = data => {
-    this.props.navigation.navigate("Line", data);
+    this.props.navigation.navigate("Line", { ...data, mode: "info" });
   };
 
   onChangeText = newText => {

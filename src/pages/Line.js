@@ -3,8 +3,12 @@ import PropTypes from "prop-types";
 import { View, Text, StyleSheet } from "react-native";
 
 import { colors } from "../constants/styles";
+import LineHeaderIcon from "../components/icons/LineHeaderIcon";
+import LineSubHeaderIcon from "../components/icons/LineSubHeaderIcon";
+import LineInfoView from "../components/views/LineInfoView";
+import LineScheduleView from "../components/views/LineScheduleView";
 
-const getHeaderTitle = ({ nome, obs }) => (
+const HeaderTitle = ({ nome, obs }) => (
   <View>
     <Text style={styles.headerTitle}>{nome}</Text>
     {obs && <Text style={styles.headerSubtitle}>({obs})</Text>}
@@ -12,18 +16,88 @@ const getHeaderTitle = ({ nome, obs }) => (
 );
 
 class Line extends PureComponent {
-  static navigationOptions = props => ({
-    headerTitle: getHeaderTitle(props.navigation.state.params),
-    headerBackTitle: "Voltar",
-    headerBackTitleStyle: { color: "white" },
-    headerTintColor: "white",
-    headerStyle: { backgroundColor: colors.primary }
-  });
+  static navigationOptions = props => {
+    const { state, setParams } = props.navigation;
+    const { params } = state;
+    return {
+      headerTitle: HeaderTitle(params),
+      headerBackTitle: "Voltar",
+      headerBackTitleStyle: { color: "white" },
+      headerTintColor: "white",
+      headerStyle: { backgroundColor: colors.primary },
+      headerRight: <LineHeaderIcon setParams={setParams} mode={params.mode} />
+    };
+  };
+
+  state = {
+    dataIndex: 0,
+    // test data
+    line: {
+      cod: "123",
+      nome: "Biguaçu",
+      obs: "",
+      updated_at: "15/01/2018",
+      tempo: "35 minutos",
+      preco: "R$ 3,50",
+      data: [
+        {
+          saida: "BAIRRO",
+          weekdays: [
+            {
+              dia: "Semana",
+              schedule: ["05:50", "06:50"]
+            },
+            {
+              dia: "Sábado",
+              schedule: ["07:30", "08:30"]
+            }
+          ]
+        },
+        {
+          saida: "TICEN - PLATAFORMA E",
+          weekdays: [
+            {
+              dia: "Semana",
+              schedule: ["05:50", "06:50"]
+            },
+            {
+              dia: "Sábado",
+              schedule: ["07:30", "08:30"]
+            }
+          ]
+        }
+      ]
+    }
+  };
+
+  onSubHeaderIconPress = () => {
+    this.setState(old => ({
+      dataIndex: (old.dataIndex + 1) % 2
+    }));
+  };
 
   render() {
+    const { params } = this.props.navigation.state;
+    const { line, dataIndex } = this.state;
+    const lineData = line.data[dataIndex];
     return (
-      <View>
-        <Text>Line {this.props.navigation.state.params.cod}</Text>
+      <View style={styles.outerContainer}>
+        <View style={styles.subHeader}>
+          <Text style={styles.subHeaderText}>
+            {params.mode === "info" ? "Informações" : lineData.saida}
+          </Text>
+          {params.mode !== "info" && (
+            <LineSubHeaderIcon
+              index={this.state.dataIndex}
+              onPress={this.onSubHeaderIconPress}
+            />
+          )}
+        </View>
+        {params.mode === "info" ? (
+          <LineInfoView data={this.state.line} />
+        ) : (
+          <LineScheduleView data={lineData} />
+        )}
       </View>
     );
   }
@@ -39,6 +113,26 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: "bold",
     color: "white"
+  },
+  outerContainer: {
+    flex: 1
+  },
+  subHeader: {
+    height: 40,
+    flex: 0,
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    borderTopColor: "white",
+    borderTopWidth: 2,
+    backgroundColor: colors.primary_light
+  },
+  subHeaderText: {
+    flexGrow: 1,
+    textAlign: "center",
+    color: "white",
+    fontWeight: "bold",
+    fontSize: 18
   }
 });
 
@@ -51,7 +145,8 @@ Line.propTypes = {
         nome: PropTypes.string,
         obs: PropTypes.string
       }).isRequired
-    }).isRequired
+    }).isRequired,
+    setParams: PropTypes.func
   }).isRequired
 };
 
