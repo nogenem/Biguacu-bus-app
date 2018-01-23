@@ -1,18 +1,38 @@
-import React, { Component } from "react";
+import React from "react";
 import PropTypes from "prop-types";
-import { View, StyleSheet } from "react-native";
+import { StyleSheet, Text } from "react-native";
+import { Card } from "react-native-elements";
 
-class LineInfoView extends Component {
-  render() {
-    return <View style={styles.container} />;
-  }
-}
+const InfoText = ({ description, data }) => (
+  <Text>
+    <Text style={styles.bold}>{description}:</Text> {data}
+  </Text>
+);
+
+const LineInfoView = ({ data }) => {
+  const { cod, nome, obs, updated_at: updatedAt, tempo, preco } = data;
+  const linha = `${cod} ${nome}`;
+  return (
+    <Card>
+      <InfoText description="Linha" data={linha} />
+      {obs && <InfoText description="Obs" data={obs} />}
+      <InfoText description="Tempo de viagem" data={tempo} />
+      <InfoText description="Tarifa" data={preco} />
+      <InfoText description="Última atualização" data={updatedAt} />
+    </Card>
+  );
+};
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1
+  bold: {
+    fontWeight: "bold"
   }
 });
+
+InfoText.propTypes = {
+  description: PropTypes.string.isRequired,
+  data: PropTypes.string.isRequired
+};
 
 LineInfoView.propTypes = {
   data: PropTypes.shape({
