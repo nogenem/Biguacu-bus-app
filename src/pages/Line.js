@@ -45,7 +45,7 @@ class Line extends PureComponent {
           weekdays: [
             {
               dia: "Semana",
-              schedule: ["05:50", "06:50"]
+              schedule: ["05:30", "06:30"]
             },
             {
               dia: "Sábado",
@@ -58,11 +58,11 @@ class Line extends PureComponent {
           weekdays: [
             {
               dia: "Semana",
-              schedule: ["05:50", "06:50"]
+              schedule: ["05:00", "05:30", "06:30", "12:50", "13:50"]
             },
             {
               dia: "Sábado",
-              schedule: ["07:30", "08:30"]
+              schedule: ["07:30", "08:30", "16:50", "17:50"]
             }
           ]
         }
@@ -88,16 +88,17 @@ class Line extends PureComponent {
           </Text>
           {params.mode !== "info" && (
             <LineSubHeaderIcon
-              index={this.state.dataIndex}
+              index={dataIndex}
               onPress={this.onSubHeaderIconPress}
             />
           )}
         </View>
-        {params.mode === "info" ? (
-          <LineInfoView data={this.state.line} />
-        ) : (
-          <LineScheduleView data={lineData} />
-        )}
+        <LineInfoView data={line} visible={params.mode === "info"} />
+        <LineScheduleView
+          data={line.data}
+          index={dataIndex}
+          visible={params.mode === "schedule"}
+        />
       </View>
     );
   }
@@ -139,6 +140,7 @@ const styles = StyleSheet.create({
 });
 
 HeaderTitle.propTypes = {
+  // ownProps
   nome: PropTypes.string.isRequired,
   obs: PropTypes.string.isRequired
 };

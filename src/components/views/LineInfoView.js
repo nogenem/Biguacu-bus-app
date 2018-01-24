@@ -9,7 +9,9 @@ const InfoText = ({ description, data }) => (
   </Text>
 );
 
-const LineInfoView = ({ data }) => {
+const LineInfoView = ({ data, visible }) => {
+  if (!visible) return null;
+
   const { cod, nome, obs, updated_at: updatedAt, tempo, preco } = data;
   const linha = `${cod} ${nome}`;
   return (
@@ -42,7 +44,8 @@ LineInfoView.propTypes = {
     updated_at: PropTypes.string,
     tempo: PropTypes.string,
     preco: PropTypes.string
-  }).isRequired
+  }).isRequired,
+  visible: PropTypes.bool.isRequired
 };
 
 export default LineInfoView;
