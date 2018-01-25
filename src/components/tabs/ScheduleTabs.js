@@ -41,7 +41,7 @@ class ScheduleTabs extends PureComponent {
         <View style={styles.tabs}>
           {tabsText.map((text, idx) => (
             <ScheduleTab
-              key={idx}
+              key={text}
               text={text}
               index={idx}
               onPress={this.onTabPress}

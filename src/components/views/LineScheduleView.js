@@ -1,19 +1,21 @@
-import React from "react";
+import React, { PureComponent } from "react";
 import PropTypes from "prop-types";
 import { View, StyleSheet } from "react-native";
 
 import ScheduleTabs from "../tabs/ScheduleTabs";
 
-const LineScheduleView = ({ data, index, visible }) => {
-  if (!visible) return null;
-  return (
-    <View style={styles.container}>
-      {data.map((item, idx) => (
-        <ScheduleTabs key={idx} data={item} visible={idx === index} />
-      ))}
-    </View>
-  );
-};
+class LineScheduleView extends PureComponent {
+  render() {
+    const { data, index } = this.props;
+    return (
+      <View style={styles.container}>
+        {data.map((item, idx) => (
+          <ScheduleTabs key={idx} data={item} visible={idx === index} />
+        ))}
+      </View>
+    );
+  }
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -34,8 +36,7 @@ LineScheduleView.propTypes = {
       )
     })
   ).isRequired,
-  index: PropTypes.number.isRequired,
-  visible: PropTypes.bool.isRequired
+  index: PropTypes.number.isRequired
 };
 
 export default LineScheduleView;

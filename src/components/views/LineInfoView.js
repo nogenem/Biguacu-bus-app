@@ -1,42 +1,28 @@
-import React from "react";
+import React, { PureComponent } from "react";
 import PropTypes from "prop-types";
-import { StyleSheet, Text } from "react-native";
 import { Card } from "react-native-elements";
 
-const InfoText = ({ description, data }) => (
-  <Text>
-    <Text style={styles.bold}>{description}:</Text> {data}
-  </Text>
-);
+import InfoText from "../texts/InfoText";
 
-const LineInfoView = ({ data, visible }) => {
-  if (!visible) return null;
-
-  const { cod, nome, obs, updated_at: updatedAt, tempo, preco } = data;
-  const linha = `${cod} ${nome}`;
-  return (
-    <Card>
-      <InfoText description="Linha" data={linha} />
-      {!!obs && <InfoText description="Obs" data={obs} />}
-      <InfoText description="Tempo de viagem" data={tempo} />
-      <InfoText description="Tarifa" data={preco} />
-      <InfoText description="Última atualização" data={updatedAt} />
-    </Card>
-  );
-};
-
-const styles = StyleSheet.create({
-  bold: {
-    fontWeight: "bold"
+class LineInfoView extends PureComponent {
+  render() {
+    const { data } = this.props;
+    const { cod, nome, obs, updated_at: updatedAt, tempo, preco } = data;
+    const linha = `${cod} ${nome}`;
+    return (
+      <Card>
+        <InfoText description="Linha" data={linha} />
+        {!!obs && <InfoText description="Obs" data={obs} />}
+        <InfoText description="Tempo de viagem" data={tempo} />
+        <InfoText description="Tarifa" data={preco} />
+        <InfoText description="Última atualização" data={updatedAt} />
+      </Card>
+    );
   }
-});
-
-InfoText.propTypes = {
-  description: PropTypes.string.isRequired,
-  data: PropTypes.string.isRequired
-};
+}
 
 LineInfoView.propTypes = {
+  // ownProps
   data: PropTypes.shape({
     cod: PropTypes.number,
     nome: PropTypes.string,
@@ -44,8 +30,7 @@ LineInfoView.propTypes = {
     updated_at: PropTypes.string,
     tempo: PropTypes.string,
     preco: PropTypes.string
-  }).isRequired,
-  visible: PropTypes.bool.isRequired
+  }).isRequired
 };
 
 export default LineInfoView;

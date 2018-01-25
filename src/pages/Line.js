@@ -88,12 +88,10 @@ class Line extends PureComponent {
             />
           )}
         </View>
-        <LineInfoView data={line} visible={params.mode === "info"} />
-        <LineScheduleView
-          data={line.data}
-          index={dataIndex}
-          visible={params.mode === "schedule"}
-        />
+        {params.mode === "info" && <LineInfoView data={line} />}
+        {params.mode === "schedule" && (
+          <LineScheduleView data={line.data} index={dataIndex} />
+        )}
       </View>
     );
   }

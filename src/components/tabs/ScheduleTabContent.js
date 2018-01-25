@@ -1,51 +1,32 @@
-import React from "react";
+import React, { PureComponent } from "react";
 import PropTypes from "prop-types";
-import { View, ScrollView, Text, StyleSheet } from "react-native";
+import { ScrollView, StyleSheet } from "react-native";
 
-const TabContentText = ({ text }) => (
-  <View style={styles.text_container}>
-    <Text style={styles.text}>{text}</Text>
-  </View>
-);
+import TabContentText from "../texts/TabContentText";
 
 const getKey = (time, idx) => `${idx}_${time}`;
 
-const ScheduleTabContent = ({ schedule }) => (
-  <ScrollView contentContainerStyle={styles.content_container}>
-    {schedule.map((time, idx) => (
-      <TabContentText key={getKey(time, idx)} text={time} />
-    ))}
-  </ScrollView>
-);
+class ScheduleTabContent extends PureComponent {
+  render() {
+    const { schedule } = this.props;
+    return (
+      <ScrollView contentContainerStyle={styles.container}>
+        {schedule.map((time, idx) => (
+          <TabContentText key={getKey(time, idx)} text={time} />
+        ))}
+      </ScrollView>
+    );
+  }
+}
 
 const styles = StyleSheet.create({
-  content_container: {
+  container: {
     flex: 1,
     flexDirection: "row",
     flexWrap: "wrap",
     padding: 2
-  },
-  text_container: {
-    flex: 0,
-    justifyContent: "center",
-    width: 55,
-    height: 30,
-    borderRadius: 4,
-    borderWidth: 0.5,
-    borderColor: "#ccc",
-    backgroundColor: "#f8f8f8",
-    margin: 2
-  },
-  text: {
-    textAlign: "center",
-    fontWeight: "500"
   }
 });
-
-TabContentText.propTypes = {
-  // ownProps
-  text: PropTypes.string.isRequired
-};
 
 ScheduleTabContent.propTypes = {
   // ownProps
