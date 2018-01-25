@@ -1,10 +1,15 @@
 import {
   getAllUpdatedAt,
   updateAll,
-  getAllNameAndObs
+  getAllNameAndObs,
+  getByCod
 } from "../database/lines";
 import { getLines, getLine } from "../extractors";
-import { LINES_UPDATED, LINES_NAME_OBS_LOADED } from "../constants/types";
+import {
+  LINES_UPDATED,
+  LINES_NAME_OBS_LOADED,
+  LINE_LOADED
+} from "../constants/types";
 
 const linesUpdated = () => ({
   type: LINES_UPDATED
@@ -12,6 +17,11 @@ const linesUpdated = () => ({
 
 const linesNameAndObsLoaded = data => ({
   type: LINES_NAME_OBS_LOADED,
+  data
+});
+
+const lineLoaded = data => ({
+  type: LINE_LOADED,
   data
 });
 
@@ -57,3 +67,6 @@ export const updateLines = () => async dispatch => {
 
 export const loadLinesNameAndObs = () => dispatch =>
   getAllNameAndObs().then(data => dispatch(linesNameAndObsLoaded(data)));
+
+export const loadLineByCod = cod => dispatch =>
+  getByCod(cod).then(line => dispatch(lineLoaded(line)));

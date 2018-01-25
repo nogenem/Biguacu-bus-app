@@ -17,7 +17,7 @@ const LineInfoView = ({ data, visible }) => {
   return (
     <Card>
       <InfoText description="Linha" data={linha} />
-      {obs && <InfoText description="Obs" data={obs} />}
+      {!!obs && <InfoText description="Obs" data={obs} />}
       <InfoText description="Tempo de viagem" data={tempo} />
       <InfoText description="Tarifa" data={preco} />
       <InfoText description="Última atualização" data={updatedAt} />
@@ -38,7 +38,7 @@ InfoText.propTypes = {
 
 LineInfoView.propTypes = {
   data: PropTypes.shape({
-    cod: PropTypes.string,
+    cod: PropTypes.number,
     nome: PropTypes.string,
     obs: PropTypes.string,
     updated_at: PropTypes.string,

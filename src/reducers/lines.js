@@ -1,7 +1,11 @@
 import { createSelector } from "reselect";
 import sortBy from "lodash.sortby";
 
-import { LINES_UPDATED, LINES_NAME_OBS_LOADED } from "../constants/types";
+import {
+  LINES_UPDATED,
+  LINES_NAME_OBS_LOADED,
+  LINE_LOADED
+} from "../constants/types";
 
 const INITIAL_STATE = {};
 
@@ -11,6 +15,11 @@ export default function lines(state = INITIAL_STATE, action = {}) {
       return {
         ...action.data,
         ...state
+      };
+    case LINE_LOADED:
+      return {
+        ...state,
+        ...action.data
       };
     case LINES_UPDATED:
       return INITIAL_STATE;
@@ -31,3 +40,9 @@ export const getLinesNameAndObs = createSelector(getLinesArray, arr => {
   }));
   return sortBy(data, ["nome"]);
 });
+const getCod = (state, cod) => cod;
+export const getLineByCod = createSelector(
+  getLinesHash,
+  getCod,
+  (hash, cod) => hash[cod] || {}
+);

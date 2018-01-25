@@ -88,6 +88,7 @@ const extractLine = (resp, updated_at) => {
           .trim();
         if (dia.indexOf("Segunda") > -1) dia = "Semana";
         else if (dia.indexOf("feriados") > -1) dia = "Domingo";
+        else dia = "Sábado";
 
         data.weekdays[b] = { dia, schedule: [] };
 

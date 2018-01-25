@@ -1,17 +1,22 @@
 import React, { PureComponent } from "react";
 import PropTypes from "prop-types";
+import { connect } from "react-redux";
 import { View, Text, StyleSheet } from "react-native";
+import Spinner from "react-native-loading-spinner-overlay";
 
 import { colors } from "../constants/styles";
 import LineHeaderIcon from "../components/icons/LineHeaderIcon";
 import LineSubHeaderIcon from "../components/icons/LineSubHeaderIcon";
 import LineInfoView from "../components/views/LineInfoView";
 import LineScheduleView from "../components/views/LineScheduleView";
+import { loadLineByCod } from "../actions/lines";
+import { getLineByCod } from "../reducers/lines";
+import handleErrors from "../utils/handleErrors";
 
 const HeaderTitle = ({ nome, obs }) => (
   <View>
     <Text style={styles.headerTitle}>{nome}</Text>
-    {obs && <Text style={styles.headerSubtitle}>({obs})</Text>}
+    {!!obs && <Text style={styles.headerSubtitle}>({obs})</Text>}
   </View>
 );
 
@@ -29,46 +34,26 @@ class Line extends PureComponent {
     };
   };
 
-  state = {
-    dataIndex: 0,
-    // test data
-    line: {
-      cod: "12400",
-      nome: "SHOPPING CENTER ITAGUACU",
-      obs: "VIA ESTREITO",
-      updated_at: "15/01/2018",
-      tempo: "35 minutos",
-      preco: "R$ 3,50",
-      data: [
-        {
-          saida: "BAIRRO",
-          weekdays: [
-            {
-              dia: "Semana",
-              schedule: ["05:30", "06:30"]
-            },
-            {
-              dia: "Sábado",
-              schedule: ["07:30", "08:30"]
-            }
-          ]
-        },
-        {
-          saida: "TICEN - PLATAFORMA E",
-          weekdays: [
-            {
-              dia: "Semana",
-              schedule: ["05:00", "05:30", "06:30", "12:50", "13:50"]
-            },
-            {
-              dia: "Sábado",
-              schedule: ["07:30", "08:30", "16:50", "17:50"]
-            }
-          ]
-        }
-      ]
-    }
-  };
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      dataIndex: 0,
+      line: props.line
+    };
+  }
+
+  componentDidMount() {
+    if (!this.state.line.data)
+      this.props
+        .loadLineByCod(this.props.navigation.state.params.cod)
+        .catch(err => handleErrors(err));
+  }
+
+  componentWillReceiveProps(newProps) {
+    if (!this.props.line.data && newProps.line.data)
+      this.setState({ line: newProps.line });
+  }
 
   onSubHeaderIconPress = () => {
     this.setState(old => ({
@@ -79,6 +64,16 @@ class Line extends PureComponent {
   render() {
     const { params } = this.props.navigation.state;
     const { line, dataIndex } = this.state;
+    if (!line.data)
+      return (
+        <Spinner
+          visible
+          textContent="Carregando..."
+          color={colors.primary}
+          textStyle={styles.spinner_text}
+        />
+      );
+
     const lineData = line.data[dataIndex];
     return (
       <View style={styles.outerContainer}>
@@ -136,6 +131,9 @@ const styles = StyleSheet.create({
     color: "white",
     fontWeight: "bold",
     fontSize: 18
+  },
+  spinner_text: {
+    color: colors.primary
   }
 });
 
@@ -156,7 +154,30 @@ Line.propTypes = {
       }).isRequired
     }).isRequired,
     setParams: PropTypes.func
-  }).isRequired
+  }).isRequired,
+  // mapStateToProps
+  line: PropTypes.shape({
+    cod: PropTypes.number,
+    nome: PropTypes.string,
+    data: PropTypes.arrayOf(
+      PropTypes.shape({
+        saida: PropTypes.string,
+        weekdays: PropTypes.arrayOf(
+          PropTypes.shape({
+            dia: PropTypes.string,
+            schedule: PropTypes.arrayOf(PropTypes.string)
+          })
+        )
+      })
+    )
+  }).isRequired,
+  // mapDispatchToProps
+  loadLineByCod: PropTypes.func.isRequired
 };
 
-export default Line;
+const mapStateToProps = (state, props) => ({
+  line: getLineByCod(state, props.navigation.state.params.cod)
+});
+
+export const UnconnectedLine = Line;
+export default connect(mapStateToProps, { loadLineByCod })(Line);
