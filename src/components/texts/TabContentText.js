@@ -2,12 +2,18 @@ import React, { PureComponent } from "react";
 import PropTypes from "prop-types";
 import { View, Text, StyleSheet } from "react-native";
 
+const getKey = (txt, idx) => `${idx}_${txt}`;
+
 class TabContentText extends PureComponent {
   render() {
-    const { text } = this.props;
+    const { texts } = this.props;
     return (
       <View style={styles.container}>
-        <Text style={styles.text}>{text}</Text>
+        {texts.map((txt, idx) => (
+          <Text key={getKey(txt, idx)} style={styles.text}>
+            {txt}
+          </Text>
+        ))}
       </View>
     );
   }
@@ -16,14 +22,16 @@ class TabContentText extends PureComponent {
 const styles = StyleSheet.create({
   container: {
     flex: 0,
-    justifyContent: "center",
-    width: 55,
-    height: 30,
+    flexDirection: "row",
+    justifyContent: "space-around",
+    alignItems: "center",
+    height: 40,
     borderRadius: 4,
     borderWidth: 0.5,
     borderColor: "#ccc",
     backgroundColor: "#f8f8f8",
-    margin: 2
+    marginVertical: 5,
+    paddingHorizontal: 10
   },
   text: {
     textAlign: "center",
@@ -33,7 +41,7 @@ const styles = StyleSheet.create({
 
 TabContentText.propTypes = {
   // ownProps
-  text: PropTypes.string.isRequired
+  texts: PropTypes.arrayOf(PropTypes.string).isRequired
 };
 
 export default TabContentText;

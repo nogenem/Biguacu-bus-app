@@ -31,8 +31,6 @@ class ScheduleTabs extends PureComponent {
   };
 
   render() {
-    if (!this.props.visible) return null;
-
     const { tabIndex, tabsText } = this.state;
     const { data } = this.props;
     return (
@@ -78,8 +76,7 @@ ScheduleTabs.propTypes = {
         schedule: PropTypes.arrayOf(PropTypes.string)
       })
     )
-  }).isRequired,
-  visible: PropTypes.bool.isRequired
+  }).isRequired
 };
 
 export default ScheduleTabs;

@@ -1,19 +1,43 @@
 import React, { PureComponent } from "react";
 import PropTypes from "prop-types";
-import { ScrollView, StyleSheet } from "react-native";
+import { ScrollView, StyleSheet, Dimensions } from "react-native";
 
 import TabContentText from "../texts/TabContentText";
 
-const getKey = (time, idx) => `${idx}_${time}`;
+const itemWidth = 55;
 
 class ScheduleTabContent extends PureComponent {
-  render() {
+  state = {
+    numColumns: Math.floor(Dimensions.get("window").width / itemWidth)
+  };
+
+  onLayout = contentWidth => {
+    // const { width } = event.nativeEvent.layout;
+    const numColumns = Math.floor(contentWidth / itemWidth);
+    this.setState({ numColumns });
+  };
+
+  renderItems = () => {
+    const { numColumns } = this.state;
     const { schedule } = this.props;
+    const content = [];
+
+    for (let i = 0; i < schedule.length; i += numColumns) {
+      content.push(
+        <TabContentText key={i} texts={schedule.slice(i, i + numColumns)} />
+      );
+    }
+    return content;
+  };
+
+  render() {
     return (
-      <ScrollView contentContainerStyle={styles.container}>
-        {schedule.map((time, idx) => (
-          <TabContentText key={getKey(time, idx)} text={time} />
-        ))}
+      <ScrollView
+        contentContainerStyle={styles.container}
+        onContentSizeChange={this.onLayout}
+        vertical
+      >
+        {this.renderItems()}
       </ScrollView>
     );
   }
@@ -21,9 +45,6 @@ class ScheduleTabContent extends PureComponent {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    flexDirection: "row",
-    flexWrap: "wrap",
     padding: 2
   }
 });
