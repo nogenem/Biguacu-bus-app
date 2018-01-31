@@ -1,6 +1,10 @@
 import { createSelector } from "reselect";
 
-import { LINES_UPDATED, LINES_NAME_OBS_LOADED } from "../constants/types";
+import {
+  LINES_UPDATED,
+  LINES_NAME_OBS_LOADED,
+  DEPARTURES_LOADED
+} from "../constants/types";
 
 const INITIAL_STATE = {
   linesLoaded: false, // search line
@@ -11,6 +15,13 @@ export default function status(state = INITIAL_STATE, action = {}) {
   switch (action.type) {
     // DEPARTURES_LOADED => adicionar todas ao departuresLoaded como false
     // DEPARTURE_LOADED => adicionar a departure em questão como true no departuresLoaded
+    case DEPARTURES_LOADED: {
+      const newState = { ...state };
+      action.data.forEach(departure => {
+        newState.departuresLoaded[departure] = false;
+      });
+      return newState;
+    }
     case LINES_NAME_OBS_LOADED:
       return {
         ...state,

@@ -29,6 +29,11 @@ export const getAllNameAndObs = () =>
     "select cod,nome,obs from linha l ORDER BY l.nome ASC;"
   ).then(resp => reshapeData(resp));
 
+export const getAllDepartures = () =>
+  DBManager.getItems(
+    "select saida from horario GROUP BY saida ORDER BY saida ASC;"
+  ).then(items => items.map(item => item.saida));
+
 const indexes = {
   Semana: 0,
   Sábado: 1,
