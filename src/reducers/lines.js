@@ -8,24 +8,49 @@ import {
   LINES_BY_DEPARTURE_LOADED
 } from "../constants/types";
 
-const INITIAL_STATE = {};
+const INITIAL_STATE = {
+  byCod: {},
+  linesLoaded: false,
+  listByDeparture: {
+    // "DEPARTURE": [cods of lines of this departure],
+  }
+};
 
 export default function lines(state = INITIAL_STATE, action = {}) {
   switch (action.type) {
     case LINES_NAME_OBS_LOADED:
       return {
-        ...action.data,
-        ...state
+        byCod: {
+          ...action.data,
+          ...state.byCod
+        },
+        linesLoaded: true,
+        listByDeparture: {
+          ...state.listByDeparture
+        }
       };
     case LINES_BY_DEPARTURE_LOADED:
       return {
-        ...state,
-        ...action.data
+        byCod: {
+          ...state.byCod,
+          ...action.data
+        },
+        linesLoaded: state.linesLoaded,
+        listByDeparture: {
+          ...state.listByDeparture,
+          [action.departure]: Object.keys(action.data)
+        }
       };
     case LINE_LOADED:
       return {
-        ...state,
-        ...action.data
+        byCod: {
+          ...state.byCod,
+          ...action.data
+        },
+        linesLoaded: state.linesLoaded,
+        listByDeparture: {
+          ...state.listByDeparture
+        }
       };
     case LINES_UPDATED:
       return INITIAL_STATE;
@@ -34,7 +59,7 @@ export default function lines(state = INITIAL_STATE, action = {}) {
   }
 }
 
-export const getLinesHash = state => state.lines || INITIAL_STATE;
+export const getLinesHash = state => state.lines.byCod || INITIAL_STATE.byCod;
 export const getLinesArray = createSelector(getLinesHash, hash =>
   Object.values(hash)
 );
@@ -52,3 +77,4 @@ export const getLineByCod = createSelector(
   getCod,
   (hash, cod) => hash[cod] || {}
 );
+export const getLinesLoaded = state => state.lines.linesLoaded;

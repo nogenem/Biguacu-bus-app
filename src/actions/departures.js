@@ -9,8 +9,9 @@ const departuresLoaded = data => ({
   data
 });
 
-const linesByDepartureLoaded = data => ({
+const linesByDepartureLoaded = (departure, data) => ({
   type: LINES_BY_DEPARTURE_LOADED,
+  departure,
   data
 });
 
@@ -19,5 +20,5 @@ export const loadDepartures = () => dispatch =>
 
 export const loadDepartureLines = departure => dispatch =>
   getByDeparture(departure).then(data =>
-    dispatch(linesByDepartureLoaded(data))
+    dispatch(linesByDepartureLoaded(departure, data))
   );

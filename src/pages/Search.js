@@ -6,8 +6,7 @@ import { List, SearchBar } from "react-native-elements";
 
 import { loadLinesNameAndObs } from "../actions/lines";
 
-import { getLinesNameAndObs } from "../reducers/lines";
-import { getLinesLoaded } from "../reducers/status";
+import { getLinesNameAndObs, getLinesLoaded } from "../reducers/lines";
 
 import SearchListItem from "../components/list_items/SearchListItem";
 import handleErrors from "../utils/handleErrors";
