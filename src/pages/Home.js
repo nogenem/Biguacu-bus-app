@@ -4,14 +4,23 @@ import PropTypes from "prop-types";
 import { View, Text, StyleSheet } from "react-native";
 
 import { colors } from "../constants/styles";
+import { DEFAULT_DEPARTURE } from "../constants/defaults";
 import HomePicker from "../components/HomePicker";
-import loadDepartures from "../actions/departures";
+import { loadDepartures, loadDepartureLines } from "../actions/departures";
 import { getDepartures } from "../reducers/departures";
+import HomeList from "../components/HomeList";
+import handleErrors from "../utils/handleErrors";
 
 class Home extends PureComponent {
+  state = {
+    currentDeparture: DEFAULT_DEPARTURE
+  };
+
   componentDidMount() {
-    // load data of default departure, if not loaded yet (!store.status["default departure"])
-    this.props.loadDepartures();
+    this.props.loadDepartures().catch(err => handleErrors(err));
+    this.props
+      .loadDepartureLines(this.state.currentDeparture)
+      .catch(err => handleErrors(err));
   }
 
   componentWillReceiveProps(newProps) {
@@ -21,7 +30,10 @@ class Home extends PureComponent {
     }
   }
 
-  onPickerValueChange = value => {};
+  onPickerValueChange = value => {
+    this.setState({ currentDeparture: value });
+    // TODO: verifica status e chama loadDepartureLines
+  };
 
   render() {
     const { departures } = this.props;
@@ -34,6 +46,9 @@ class Home extends PureComponent {
           departures={departures}
           onValueChange={this.onPickerValueChange}
         />
+        {/* TODO: pensar no melhor jeito de passar 
+                  os dados para a HomeList */}
+        <HomeList />
       </View>
     );
   }
@@ -64,7 +79,8 @@ Home.propTypes = {
   // mapStateToProps
   departures: PropTypes.arrayOf(PropTypes.string).isRequired,
   // mapDispatchToProps
-  loadDepartures: PropTypes.func.isRequired
+  loadDepartures: PropTypes.func.isRequired,
+  loadDepartureLines: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
@@ -72,4 +88,6 @@ const mapStateToProps = state => ({
 });
 
 export const UnconnectedHome = Home;
-export default connect(mapStateToProps, { loadDepartures })(Home);
+export default connect(mapStateToProps, { loadDepartures, loadDepartureLines })(
+  Home
+);

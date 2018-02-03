@@ -4,7 +4,8 @@ import sortBy from "lodash.sortby";
 import {
   LINES_UPDATED,
   LINES_NAME_OBS_LOADED,
-  LINE_LOADED
+  LINE_LOADED,
+  LINES_BY_DEPARTURE_LOADED
 } from "../constants/types";
 
 const INITIAL_STATE = {};
@@ -15,6 +16,11 @@ export default function lines(state = INITIAL_STATE, action = {}) {
       return {
         ...action.data,
         ...state
+      };
+    case LINES_BY_DEPARTURE_LOADED:
+      return {
+        ...state,
+        ...action.data
       };
     case LINE_LOADED:
       return {

@@ -73,6 +73,22 @@ export const getByCod = async cod => {
   return reshapeData([line]);
 };
 
+export const getByDeparture = async departure => {
+  const cods = await DBManager.getItems(
+    "SELECT linha_cod FROM horario WHERE saida = ? GROUP BY linha_cod ORDER BY linha_cod;",
+    [departure]
+  ).then(items => items.map(item => item.linha_cod));
+
+  const promises = cods.map(cod => getByCod(cod));
+  return Promise.all(promises).then(items => {
+    const ret = {};
+    items.forEach(item => {
+      Object.assign(ret, item);
+    });
+    return ret;
+  });
+};
+
 const getAddLinhaQueries = line => {
   const queries = [];
   queries.push([
