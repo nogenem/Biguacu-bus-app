@@ -23,23 +23,70 @@ const timeNow = date => {
   return `${h}:${m}`;
 };
 
+const getTimeDiff = time => {
+  const current = new Date();
+  const toCompare = new Date();
+  const [h, m] = time.split(":").map(val => +val);
+
+  toCompare.setHours(h);
+  toCompare.setMinutes(m);
+  toCompare.setSeconds(0);
+
+  const diff = Math.abs(toCompare.getTime() - current.getTime()) / 1000;
+  const diffHours = Math.floor(diff / 60 / 60);
+  const diffMinutes = Math.floor((diff / 60) % 60);
+  const diffSeconds = Math.floor(diff % 60);
+
+  const negative = current.getTime() > toCompare.getTime();
+  return {
+    hours: negative ? -diffHours : diffHours,
+    minutes: negative ? -diffMinutes : diffMinutes,
+    seconds: negative ? -diffSeconds : diffSeconds
+  };
+};
+
 class HomeList extends Component {
   static MAX_LIST_ITEMS = 10;
 
-  state = {
-    data: []
-  };
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      data: []
+    };
+    this.timerID = null;
+  }
 
   componentWillReceiveProps(newProps) {
     if (this.props.lines !== newProps.lines) {
-      if (newProps.lines.length) this.updateData(newProps.lines);
-      else this.setState({ data: newProps.lines });
+      this.clearTimer();
+      if (newProps.lines.length) {
+        this.updateData(newProps.lines, newProps.departure);
+        this.timerID = setInterval(this.updateData, 2000);
+      } else this.setState({ data: newProps.lines });
     }
   }
 
+  componentWillUnmount() {
+    this.clearTimer();
+  }
+
+  clearTimer = () => {
+    if (this.timerID) clearInterval(this.timerID);
+    this.timerID = null;
+  };
+
   keyExtractor = (item, idx) => idx;
 
-  updateData = lines => {
+  updateData = (lines = this.props.lines, departure = this.props.departure) => {
+    if (this.state.data.length && this.props.lines === lines) {
+      let timeDiff = getTimeDiff(this.state.data[0].hora);
+      timeDiff = Object.values(timeDiff).reduce((acc, val) => acc + val, 0);
+
+      // Ainda não chego no 1* horário da lista
+      if (timeDiff > 0) return;
+    }
+
     const ret = [];
     const cDate = new Date();
     const cHour = timeNow(cDate);
@@ -48,9 +95,7 @@ class HomeList extends Component {
     lines.forEach(line => {
       const { cod, nome, obs } = line;
       // Filtra pela saída atual
-      const [data] = line.data.filter(
-        ({ saida }) => saida === this.props.departure
-      );
+      const [data] = line.data.filter(({ saida }) => saida === departure);
       // Filtra pelo dia da semana
       const [{ schedule }] = data.weekdays.filter(({ dia }) =>
         isToday(cDay, dia)
