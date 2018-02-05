@@ -78,3 +78,19 @@ export const getLineByCod = createSelector(
   (hash, cod) => hash[cod] || {}
 );
 export const getLinesLoaded = state => state.lines.linesLoaded;
+export const getListByDeparture = state => state.lines.listByDeparture;
+const getDeparture = (state, departure) => departure;
+export const getLinesByDeparture = createSelector(
+  getLinesHash,
+  getListByDeparture,
+  getDeparture,
+  (hash, lists, departure) => {
+    const cods = lists[departure] || [];
+    const data = [];
+    cods.forEach(cod => {
+      data.push(hash[cod]);
+    });
+    // console.log("SIZES: ", cods.length, data.length);
+    return sortBy(data, ["nome"]);
+  }
+);

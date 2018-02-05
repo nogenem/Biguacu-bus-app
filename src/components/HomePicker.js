@@ -2,9 +2,11 @@ import React, { PureComponent } from "react";
 import PropTypes from "prop-types";
 import { View, Text, Picker, StyleSheet } from "react-native";
 
+import { DEFAULT_DEPARTURE } from "../constants/defaults";
+
 class HomePicker extends PureComponent {
   state = {
-    selectedValue: "TICEN - PLATAFORMA E"
+    selectedValue: DEFAULT_DEPARTURE
   };
 
   onValueChange = itemValue => {

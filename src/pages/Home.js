@@ -37,6 +37,7 @@ class Home extends PureComponent {
 
   render() {
     const { departures } = this.props;
+    const { currentDeparture } = this.state;
     return (
       <View style={styles.outerContainer}>
         <View style={styles.subheader}>
@@ -46,9 +47,7 @@ class Home extends PureComponent {
           departures={departures}
           onValueChange={this.onPickerValueChange}
         />
-        {/* TODO: pensar no melhor jeito de passar 
-                  os dados para a HomeList */}
-        <HomeList />
+        <HomeList departure={currentDeparture} />
       </View>
     );
   }
