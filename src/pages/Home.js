@@ -8,6 +8,7 @@ import { DEFAULT_DEPARTURE } from "../constants/defaults";
 import HomePicker from "../components/HomePicker";
 import { loadDepartures, loadDepartureLines } from "../actions/departures";
 import { getDepartures } from "../reducers/departures";
+import { getListByDeparture } from "../reducers/lines";
 import HomeList from "../components/HomeList";
 import handleErrors from "../utils/handleErrors";
 
@@ -32,7 +33,8 @@ class Home extends PureComponent {
 
   onPickerValueChange = value => {
     this.setState({ currentDeparture: value });
-    // TODO: verifica status e chama loadDepartureLines
+    if (!this.props.isDepartureLinesLoaded(value))
+      this.props.loadDepartureLines(value).catch(err => handleErrors(err));
   };
 
   render() {
@@ -77,13 +79,15 @@ const styles = StyleSheet.create({
 Home.propTypes = {
   // mapStateToProps
   departures: PropTypes.arrayOf(PropTypes.string).isRequired,
+  isDepartureLinesLoaded: PropTypes.func.isRequired,
   // mapDispatchToProps
   loadDepartures: PropTypes.func.isRequired,
   loadDepartureLines: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
-  departures: getDepartures(state)
+  departures: getDepartures(state),
+  isDepartureLinesLoaded: departure => !!getListByDeparture(state)[departure]
 });
 
 export const UnconnectedHome = Home;

@@ -63,6 +63,7 @@ export const getLinesHash = state => state.lines.byCod || INITIAL_STATE.byCod;
 export const getLinesArray = createSelector(getLinesHash, hash =>
   Object.values(hash)
 );
+
 export const getLinesNameAndObs = createSelector(getLinesArray, arr => {
   const data = arr.map(line => ({
     cod: line.cod,
@@ -71,14 +72,17 @@ export const getLinesNameAndObs = createSelector(getLinesArray, arr => {
   }));
   return sortBy(data, ["nome"]);
 });
+
 const getCod = (state, cod) => cod;
 export const getLineByCod = createSelector(
   getLinesHash,
   getCod,
   (hash, cod) => hash[cod] || {}
 );
+
 export const getLinesLoaded = state => state.lines.linesLoaded;
 export const getListByDeparture = state => state.lines.listByDeparture;
+
 const getDeparture = (state, departure) => departure;
 export const getLinesByDeparture = createSelector(
   getLinesHash,
