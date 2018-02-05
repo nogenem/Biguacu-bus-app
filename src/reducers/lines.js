@@ -94,7 +94,6 @@ export const getLinesByDeparture = createSelector(
     cods.forEach(cod => {
       data.push(hash[cod]);
     });
-    // console.log("SIZES: ", cods.length, data.length);
-    return sortBy(data, ["nome"]);
+    return data;
   }
 );
