@@ -6,7 +6,11 @@ import { List, ListItem } from "react-native-elements";
 import sortBy from "lodash.sortby";
 
 import { getLinesByDeparture } from "../reducers/lines";
-import { isToday, timeNow, getTimeDiff } from "../utils/dateUtils";
+import {
+  isSameDayOfWeek,
+  getTimeNowWithPadding,
+  getTimeDiff
+} from "../utils/dateUtils";
 
 class HomeList extends Component {
   static MAX_LIST_ITEMS = 10;
@@ -43,16 +47,15 @@ class HomeList extends Component {
 
   updateData = (lines = this.props.lines, departure = this.props.departure) => {
     if (this.state.data.length && this.props.lines === lines) {
-      let timeDiff = getTimeDiff(this.state.data[0].hora);
-      timeDiff = Object.values(timeDiff).reduce((acc, val) => acc + val, 0);
+      const { totalDiff } = getTimeDiff(this.state.data[0].hora);
 
       // Ainda não chego no 1* horário da lista
-      if (timeDiff > 0) return;
+      if (totalDiff > 0) return;
     }
 
     const ret = [];
     const cDate = new Date();
-    const cHour = timeNow(cDate);
+    const cHour = getTimeNowWithPadding(cDate);
     const cDay = cDate.getDay();
 
     lines.forEach(line => {
@@ -61,7 +64,7 @@ class HomeList extends Component {
       const [data] = line.data.filter(({ saida }) => saida === departure);
       // Filtra pelo dia da semana
       const [{ schedule }] = data.weekdays.filter(({ dia }) =>
-        isToday(cDay, dia)
+        isSameDayOfWeek(cDay, dia)
       );
       // Pega no máximo os 3 próximos horários de cada linha
       let count = 0;

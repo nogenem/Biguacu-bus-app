@@ -1,10 +1,11 @@
-export const isToday = (cDay, day) => {
-  if (cDay === 0 && day === "Domingo") return true;
-  else if (cDay === 6 && ["Sábado", "S\u00e1bado"].includes(day)) return true;
-  return day === "Semana" && (cDay > 0 && cDay < 6);
+export const isSameDayOfWeek = (cDay, dayOfWeek) => {
+  if (cDay === 0 && dayOfWeek === "Domingo") return true;
+  else if (cDay === 6 && ["Sábado", "S\u00e1bado"].includes(dayOfWeek))
+    return true;
+  return dayOfWeek === "Semana" && (cDay > 0 && cDay < 6);
 };
 
-export const timeNow = date => {
+export const getTimeNowWithPadding = date => {
   let h = date.getHours();
   h = `${h < 10 ? "0" : ""}${h}`;
 
@@ -32,6 +33,7 @@ export const getTimeDiff = time => {
   return {
     hours: negative ? -diffHours : diffHours,
     minutes: negative ? -diffMinutes : diffMinutes,
-    seconds: negative ? -diffSeconds : diffSeconds
+    seconds: negative ? -diffSeconds : diffSeconds,
+    totalDiff: negative ? -diff : diff
   };
 };
