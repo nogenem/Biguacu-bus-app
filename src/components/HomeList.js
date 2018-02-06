@@ -6,11 +6,9 @@ import { List, ListItem } from "react-native-elements";
 import sortBy from "lodash.sortby";
 
 import { getLinesByDeparture } from "../reducers/lines";
-import {
-  isSameDayOfWeek,
-  getTimeNowWithPadding,
-  getTimeDiff
-} from "../utils/dateUtils";
+import { getTimeNowWithPadding, getTimeDiff } from "../utils/dateUtils";
+import getNextTimes from "../utils/getNextTimes";
+import fixNextTimesList from "../utils/fixNextTimesList";
 
 class HomeList extends Component {
   static MAX_LIST_ITEMS = 10;
@@ -53,39 +51,19 @@ class HomeList extends Component {
       if (totalDiff > 0) return;
     }
 
-    const ret = [];
+    let ret = [];
     const cDate = new Date();
     const cHour = getTimeNowWithPadding(cDate);
     const cDay = cDate.getDay();
 
     lines.forEach(line => {
-      const { cod, nome, obs } = line;
-      // Filtra pela saída atual
-      const [data] = line.data.filter(({ saida }) => saida === departure);
-      // Filtra pelo dia da semana
-      const [{ schedule }] = data.weekdays.filter(({ dia }) =>
-        isSameDayOfWeek(cDay, dia)
-      );
-      // Pega no máximo os 3 próximos horários de cada linha
-      let count = 0;
-      for (let i = 0; i < schedule.length; i++) {
-        const hora = schedule[i];
-        if (cHour < hora) {
-          ret.push({
-            cod,
-            nome,
-            obs,
-            hora
-          });
-          count += 1;
-        }
-        if (count === 3) break;
-      }
+      ret.push(...getNextTimes(line, departure, cHour, cDay));
     });
 
-    // Ordena pela hora e pega os próximos MAX_LIST_ITEMS horários
+    // Ordena pela hora, 'arruma' a lista e pega os próximos MAX_LIST_ITEMS horários
+    ret = fixNextTimesList(sortBy(ret, ["hora"]), cHour);
     this.setState({
-      data: sortBy(ret, ["hora"]).slice(0, HomeList.MAX_LIST_ITEMS)
+      data: ret.slice(0, HomeList.MAX_LIST_ITEMS)
     });
   };
 
