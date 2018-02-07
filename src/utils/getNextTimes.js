@@ -1,7 +1,8 @@
 import { isSameDayOfWeek } from "./dateUtils";
+import { DEFAULT_NEXT_TIMES_LIMIT as LIMIT } from "../constants/defaults";
 
-const LIMIT = 3;
-
+// TODO: hash em vez de 'isSameDayOfWeek'
+// 		 { "Semana": 0, ... } + getDayOfWeek
 const getNextTimes = (line, departure, cHour, cDay) => {
   const { cod, nome, obs } = line;
   const ret = [];

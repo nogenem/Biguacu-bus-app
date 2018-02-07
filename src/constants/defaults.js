@@ -1,1 +1,3 @@
 export const DEFAULT_DEPARTURE = "TICEN - PLATAFORMA E";
+export const DEFAULT_NEXT_TIMES_LIMIT = 3;
+export const DEFAULT_TIMES_AROUND_LIMIT = 3;
