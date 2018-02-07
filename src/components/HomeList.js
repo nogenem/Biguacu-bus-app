@@ -9,6 +9,7 @@ import { getLinesByDeparture } from "../reducers/lines";
 import { getTimeNowWithPadding, getTimeDiff } from "../utils/dateUtils";
 import getNextTimes from "../utils/getNextTimes";
 import fixNextTimesList from "../utils/fixNextTimesList";
+import HomeListItem from "./list_items/HomeListItem";
 
 class HomeList extends Component {
   static MAX_LIST_ITEMS = 10;
@@ -67,17 +68,7 @@ class HomeList extends Component {
     });
   };
 
-  renderItem = ({ item }) => (
-    <ListItem
-      title={item.nome}
-      subtitle={item.obs && `(${item.obs})`}
-      rightTitle={item.hora}
-      rightTitleStyle={{ color: "#464b50" }}
-      hideChevron
-      titleNumberOfLines={0}
-      subtitleNumberOfLines={0}
-    />
-  );
+  renderItem = ({ item }) => <HomeListItem item={item} />;
 
   render() {
     return (
