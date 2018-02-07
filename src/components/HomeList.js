@@ -68,7 +68,13 @@ class HomeList extends Component {
     });
   };
 
-  renderItem = ({ item }) => <HomeListItem item={item} />;
+  onPressItem = data => {
+    this.props.navigation.navigate("Line", { ...data, mode: "info" });
+  };
+
+  renderItem = ({ item }) => (
+    <HomeListItem item={item} onPressItem={this.onPressItem} />
+  );
 
   render() {
     return (
@@ -93,6 +99,9 @@ const styles = StyleSheet.create({
 HomeList.propTypes = {
   // ownProps
   departure: PropTypes.string.isRequired,
+  navigation: PropTypes.shape({
+    navigate: PropTypes.func
+  }).isRequired,
   // mapStateToProps
   lines: PropTypes.arrayOf(
     PropTypes.shape({

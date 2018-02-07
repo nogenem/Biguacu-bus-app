@@ -38,7 +38,7 @@ class Home extends PureComponent {
   };
 
   render() {
-    const { departures } = this.props;
+    const { departures, navigation } = this.props;
     const { currentDeparture } = this.state;
     return (
       <View style={styles.outerContainer}>
@@ -49,7 +49,7 @@ class Home extends PureComponent {
           departures={departures}
           onValueChange={this.onPickerValueChange}
         />
-        <HomeList departure={currentDeparture} />
+        <HomeList departure={currentDeparture} navigation={navigation} />
       </View>
     );
   }
@@ -77,6 +77,10 @@ const styles = StyleSheet.create({
 });
 
 Home.propTypes = {
+  // ownProps
+  navigation: PropTypes.shape({
+    navigate: PropTypes.func
+  }).isRequired,
   // mapStateToProps
   departures: PropTypes.arrayOf(PropTypes.string).isRequired,
   isDepartureLinesLoaded: PropTypes.func.isRequired,
