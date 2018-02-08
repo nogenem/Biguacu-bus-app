@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { StyleSheet, FlatList } from "react-native";
-import { List, ListItem } from "react-native-elements";
+import { List } from "react-native-elements";
 import sortBy from "lodash.sortby";
 
 import { getLinesByDeparture } from "../reducers/lines";
@@ -37,12 +37,9 @@ class HomeList extends Component {
     this.clearTimer();
   }
 
-  clearTimer = () => {
-    if (this.timerID) clearInterval(this.timerID);
-    this.timerID = null;
+  onPressItem = data => {
+    this.props.navigation.navigate("Line", { ...data, mode: "info" });
   };
-
-  keyExtractor = (item, idx) => idx;
 
   updateData = (lines = this.props.lines, departure = this.props.departure) => {
     if (this.state.data.length && this.props.lines === lines) {
@@ -68,8 +65,11 @@ class HomeList extends Component {
     });
   };
 
-  onPressItem = data => {
-    this.props.navigation.navigate("Line", { ...data, mode: "info" });
+  keyExtractor = (item, idx) => idx;
+
+  clearTimer = () => {
+    if (this.timerID) clearInterval(this.timerID);
+    this.timerID = null;
   };
 
   renderItem = ({ item }) => (
