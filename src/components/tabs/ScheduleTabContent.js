@@ -5,6 +5,7 @@ import { ScrollView, StyleSheet, Dimensions } from "react-native";
 import TabContentText from "../texts/TabContentText";
 import getTimesAround from "../../utils/getTimesAround";
 import { isSameDayOfWeek } from "../../utils/dateUtils";
+import { SEMANA, SABADO, DOMINGO } from "../../constants/daysOfWeek";
 
 const itemWidth = 55;
 
@@ -78,7 +79,7 @@ const styles = StyleSheet.create({
 ScheduleTabContent.propTypes = {
   // ownProps
   schedule: PropTypes.arrayOf(PropTypes.string).isRequired,
-  dayOfWeek: PropTypes.oneOf(["Semana", "Sábado", "Domingo"]).isRequired
+  dayOfWeek: PropTypes.oneOf([SEMANA, SABADO, DOMINGO]).isRequired
 };
 
 export default ScheduleTabContent;

@@ -2,6 +2,7 @@
 import cheerio from "cheerio-without-node-native";
 
 import { fetchLines, fetchLine } from "./api";
+import { SEMANA, SABADO, DOMINGO } from "./constants/daysOfWeek";
 
 const getText = (node, idx = 0, slice = 0) =>
   node
@@ -86,9 +87,9 @@ const extractLine = (resp, updated_at) => {
           .find("> strong")
           .text()
           .trim();
-        if (dia.indexOf("Segunda") > -1) dia = "Semana";
-        else if (dia.indexOf("feriados") > -1) dia = "Domingo";
-        else dia = "Sábado";
+        if (dia.indexOf("Segunda") > -1) dia = SEMANA;
+        else if (dia.indexOf("feriados") > -1) dia = DOMINGO;
+        else dia = SABADO;
 
         data.weekdays[b] = { dia, schedule: [] };
 

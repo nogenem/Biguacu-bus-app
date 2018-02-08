@@ -1,9 +1,7 @@
-export const isSameDayOfWeek = (cDay, dayOfWeek) => {
-  if (cDay === 0 && dayOfWeek === "Domingo") return true;
-  else if (cDay === 6 && ["Sábado", "S\u00e1bado"].includes(dayOfWeek))
-    return true;
-  return dayOfWeek === "Semana" && (cDay > 0 && cDay < 6);
-};
+import { DAYS_OF_WEEK } from "../constants/daysOfWeek";
+
+export const isSameDayOfWeek = (cDay, dayOfWeek) =>
+  DAYS_OF_WEEK[cDay] === dayOfWeek;
 
 export const getTimeNowWithPadding = date => {
   let h = date.getHours();
