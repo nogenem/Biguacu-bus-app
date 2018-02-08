@@ -97,11 +97,11 @@ const extractLine = (resp, updated_at) => {
           .eq(1)
           .find("> ul > li")
           .each((c, li2) => {
-            const hora = $(li2)
+            let hora = $(li2)
               .text()
               .trim();
             if (hora) {
-              if (hora.indexOf("24:") > -1) hora.replace("24:", "00:");
+              if (hora.startsWith("24:")) hora = hora.replace("24:", "00:");
               data.weekdays[b].schedule.push(hora);
             }
           });

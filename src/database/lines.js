@@ -43,7 +43,7 @@ export const getByCod = async cod => {
   const [[line], horarios] = await Promise.all([
     DBManager.getItems("select * from linha where cod = ?;", [cod]),
     DBManager.getItems(
-      "select * from horario where linha_cod = ? ORDER BY saida,dia DESC;",
+      "select * from horario where linha_cod = ? ORDER BY saida,dia DESC, hora ASC;",
       [cod]
     )
   ]);
