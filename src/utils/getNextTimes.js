@@ -10,9 +10,11 @@ const getNextTimes = (line, departure, cHour, cDay) => {
   // Filtra pela saída atual
   const [data] = line.data.filter(({ saida }) => saida === departure);
   // Filtra pelo dia da semana
-  let [{ schedule }] = data.weekdays.filter(({ dia }) =>
+  let [weekdays] = data.weekdays.filter(({ dia }) =>
     isSameDayOfWeek(cDay, dia)
   );
+  if (!weekdays) return ret;
+  let { schedule } = weekdays;
   // Pega no máximo os LIMIT próximos horários da linha
   let count = 0;
   for (let i = 0; i < schedule.length; i++) {
@@ -32,9 +34,11 @@ const getNextTimes = (line, departure, cHour, cDay) => {
   if (count < LIMIT) {
     const nextDay = (cDay + 1) % 7;
     // Filtra pelo próximo dia da semana
-    [{ schedule }] = data.weekdays.filter(({ dia }) =>
+    [weekdays] = data.weekdays.filter(({ dia }) =>
       isSameDayOfWeek(nextDay, dia)
     );
+    if (!weekdays) return ret;
+    ({ schedule } = weekdays);
     // Pega no máximo os (LIMIT-count) horários da linha
     schedule.slice(0, LIMIT - count).forEach(hora => {
       ret.push({
