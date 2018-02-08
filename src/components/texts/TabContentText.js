@@ -9,6 +9,7 @@ const getKey = (txt, idx) => `${idx}_${txt}`;
 class TabContentText extends PureComponent {
   getTextStyle = txt => {
     const { timesAround } = this.props;
+    if (!timesAround.middle) return styles.text;
     if (txt === timesAround.middle) return styles.text_middle;
     if (timesAround.before.includes(txt)) return styles.text_before;
     if (timesAround.after.includes(txt)) return styles.text_after;

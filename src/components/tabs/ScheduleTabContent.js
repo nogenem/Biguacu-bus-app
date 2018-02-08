@@ -4,6 +4,7 @@ import { ScrollView, StyleSheet, Dimensions } from "react-native";
 
 import TabContentText from "../texts/TabContentText";
 import getTimesAround from "../../utils/getTimesAround";
+import { isSameDayOfWeek } from "../../utils/dateUtils";
 
 const itemWidth = 55;
 
@@ -13,15 +14,22 @@ class ScheduleTabContent extends PureComponent {
 
     this.state = {
       numColumns: Math.floor(Dimensions.get("window").width / itemWidth),
-      timesAround: getTimesAround(props.schedule)
+      timesAround: {}
     };
+    if (isSameDayOfWeek(new Date().getDay(), props.dayOfWeek))
+      this.state.timesAround = getTimesAround(props.schedule);
   }
 
   componentWillReceiveProps(newProps) {
     if (this.props.schedule !== newProps.schedule) {
-      this.setState({
-        timesAround: getTimesAround(newProps.schedule)
-      });
+      if (isSameDayOfWeek(new Date().getDay(), newProps.dayOfWeek))
+        this.setState({
+          timesAround: getTimesAround(newProps.schedule)
+        });
+      else
+        this.setState({
+          timesAround: {}
+        });
     }
   }
 
@@ -69,7 +77,8 @@ const styles = StyleSheet.create({
 
 ScheduleTabContent.propTypes = {
   // ownProps
-  schedule: PropTypes.arrayOf(PropTypes.string).isRequired
+  schedule: PropTypes.arrayOf(PropTypes.string).isRequired,
+  dayOfWeek: PropTypes.oneOf(["Semana", "Sábado", "Domingo"]).isRequired
 };
 
 export default ScheduleTabContent;

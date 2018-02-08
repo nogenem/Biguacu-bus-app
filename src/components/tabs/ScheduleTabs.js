@@ -33,9 +33,13 @@ class ScheduleTabs extends PureComponent {
   render() {
     const { tabIndex, tabsText } = this.state;
     const { data } = this.props;
+    const currentData = data.weekdays[tabIndex];
     return (
       <View style={styles.container}>
-        <ScheduleTabContent schedule={data.weekdays[tabIndex].schedule} />
+        <ScheduleTabContent
+          dayOfWeek={currentData.dia}
+          schedule={currentData.schedule}
+        />
         <View style={styles.tabs}>
           {tabsText.map((text, idx) => (
             <ScheduleTab
