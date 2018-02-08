@@ -18,14 +18,14 @@ class ScheduleTabContent extends PureComponent {
       timesAround: {}
     };
     if (isSameDayOfWeek(new Date().getDay(), props.dayOfWeek))
-      this.state.timesAround = getTimesAround(props.schedule);
+      this.state.timesAround = getTimesAround(props.schedule, props.dayOfWeek);
   }
 
   componentWillReceiveProps(newProps) {
     if (this.props.schedule !== newProps.schedule) {
       if (isSameDayOfWeek(new Date().getDay(), newProps.dayOfWeek))
         this.setState({
-          timesAround: getTimesAround(newProps.schedule)
+          timesAround: getTimesAround(newProps.schedule, newProps.dayOfWeek)
         });
       else
         this.setState({
