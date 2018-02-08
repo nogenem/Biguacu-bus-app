@@ -2,6 +2,7 @@ import React, { PureComponent } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { View, Text, StyleSheet } from "react-native";
+import Spinner from "react-native-loading-spinner-overlay";
 
 import { colors } from "../constants/styles";
 import { DEFAULT_DEPARTURE } from "../constants/defaults";
@@ -14,20 +15,37 @@ import handleErrors from "../utils/handleErrors";
 
 class Home extends PureComponent {
   state = {
-    currentDeparture: DEFAULT_DEPARTURE
+    currentDeparture: DEFAULT_DEPARTURE,
+    loading: true
   };
 
   componentDidMount() {
-    this.props.loadDepartures().catch(err => handleErrors(err));
-    this.props
-      .loadDepartureLines(this.state.currentDeparture)
-      .catch(err => handleErrors(err));
+    Promise.all([
+      this.props.loadDepartures().catch(err => handleErrors(err)),
+      this.props
+        .loadDepartureLines(this.state.currentDeparture)
+        .catch(err => handleErrors(err))
+    ]).then(() => {
+      this.setState({ loading: false });
+    });
   }
 
   componentWillReceiveProps(newProps) {
     // Irá acontecer quando atualizar as linhas
-    if (this.props.departures.length > 0 && newProps.departures.length === 0) {
-      this.props.loadDepartures();
+    if (
+      !this.state.loading &&
+      this.props.departures.length > 0 &&
+      newProps.departures.length === 0
+    ) {
+      this.setState({ currentDeparture: DEFAULT_DEPARTURE, loading: true });
+      Promise.all([
+        this.props.loadDepartures().catch(err => handleErrors(err)),
+        this.props
+          .loadDepartureLines(DEFAULT_DEPARTURE)
+          .catch(err => handleErrors(err))
+      ]).then(() => {
+        this.setState({ loading: false });
+      });
     }
   }
 
@@ -42,6 +60,12 @@ class Home extends PureComponent {
     const { currentDeparture } = this.state;
     return (
       <View style={styles.outerContainer}>
+        <Spinner
+          visible={this.state.loading}
+          textContent="Carregando..."
+          color={colors.primary}
+          textStyle={styles.spinner_text}
+        />
         <View style={styles.subheader}>
           <Text style={styles.subheader_text}>Próximas partidas</Text>
         </View>
@@ -73,6 +97,9 @@ const styles = StyleSheet.create({
     color: "white",
     fontWeight: "bold",
     fontSize: 18
+  },
+  spinner_text: {
+    color: colors.primary
   }
 });
 
