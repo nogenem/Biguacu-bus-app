@@ -35,3 +35,11 @@ export const getTimeDiff = time => {
     totalDiff: negative ? -diff : diff
   };
 };
+
+export const getDaysDiff = dateStr => {
+  const today = new Date();
+  const otherDay = new Date(dateStr);
+
+  const diff = Math.abs(today.getTime() - otherDay.getTime()) / 1000;
+  return Math.floor(diff / 60 / 60 / 24);
+};

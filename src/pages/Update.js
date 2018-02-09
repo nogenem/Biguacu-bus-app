@@ -7,8 +7,11 @@ import Spinner from "react-native-loading-spinner-overlay";
 import Icon from "react-native-vector-icons/MaterialIcons";
 
 import { updateLines } from "../actions/lines";
+import { loadUserData, setLastUpdate } from "../actions/userData";
+import { getLastUpdate } from "../reducers/userData";
 import { colors } from "../constants/styles";
 import handleErrors from "../utils/handleErrors";
+import { getDaysDiff } from "../utils/dateUtils";
 
 class Update extends PureComponent {
   static navigationOptions = props => {
@@ -36,15 +39,24 @@ class Update extends PureComponent {
   };
 
   componentDidMount() {
-    // TODO: carregar last_update do banco de dados
-    // e verificar se deve mostrar badge, today - last_update >= 30dias
-    // this.props.navigation.setParams({ showBadge: true });
+    this.props.loadUserData();
+  }
+
+  componentWillReceiveProps(newProps) {
+    if (
+      this.props.lastUpdate !== newProps.lastUpdate &&
+      !!newProps.lastUpdate
+    ) {
+      const daysDiff = getDaysDiff(newProps.lastUpdate);
+      this.props.navigation.setParams({ showBadge: daysDiff >= 30 });
+    }
   }
 
   update = async () => {
     this.setState({ loading: true });
     try {
       const lists = await this.props.updateLines();
+      await this.props.setLastUpdate(new Date());
       Alert.alert(
         "Resultado da atualização",
         `${lists.toAdd} linha(s) adicinada(s);\n` +
@@ -124,8 +136,12 @@ Update.propTypes = {
     }),
     setParams: PropTypes.func
   }).isRequired,
+  // mapStateToProps
+  lastUpdate: PropTypes.string.isRequired,
   // mapDispatchToProps
-  updateLines: PropTypes.func.isRequired
+  updateLines: PropTypes.func.isRequired,
+  loadUserData: PropTypes.func.isRequired,
+  setLastUpdate: PropTypes.func.isRequired
 };
 
 const icons = {
@@ -155,5 +171,13 @@ const styles = StyleSheet.create({
   }
 });
 
+const mapStateToProps = state => ({
+  lastUpdate: getLastUpdate(state)
+});
+
 export const UnconnectedUpdate = Update;
-export default connect(null, { updateLines })(Update);
+export default connect(mapStateToProps, {
+  updateLines,
+  loadUserData,
+  setLastUpdate
+})(Update);
