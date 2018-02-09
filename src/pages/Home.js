@@ -51,8 +51,18 @@ class Home extends PureComponent {
 
   onPickerValueChange = value => {
     this.setState({ currentDeparture: value });
-    if (!this.props.isDepartureLinesLoaded(value))
-      this.props.loadDepartureLines(value).catch(err => handleErrors(err));
+    if (!this.props.isDepartureLinesLoaded(value)) {
+      this.setState({ loading: true });
+      this.props
+        .loadDepartureLines(value)
+        .then(() => {
+          this.setState({ loading: false });
+        })
+        .catch(err => {
+          this.setState({ loading: false });
+          handleErrors(err);
+        });
+    }
   };
 
   render() {
