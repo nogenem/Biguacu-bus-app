@@ -1,7 +1,7 @@
 /* eslint no-underscore-dangle: 0 */
 import SQLite from "react-native-sqlite-storage";
 
-SQLite.DEBUG(true);
+SQLite.DEBUG(false);
 SQLite.enablePromise(true);
 
 export default class DBManager {
