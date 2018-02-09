@@ -10,6 +10,7 @@ import { updateLines } from "../actions/lines";
 import { loadUserData, setLastUpdate } from "../actions/userData";
 import { getLastUpdate } from "../reducers/userData";
 import { colors } from "../constants/styles";
+import { DEFAULT_LAST_UPDATE_DAYS_LIMIT as DAYS_LIMIT } from "../constants/defaults";
 import handleErrors from "../utils/handleErrors";
 import { getDaysDiff } from "../utils/dateUtils";
 
@@ -35,7 +36,8 @@ class Update extends PureComponent {
   };
 
   state = {
-    loading: false
+    loading: false,
+    daysDiff: 0
   };
 
   componentDidMount() {
@@ -48,7 +50,8 @@ class Update extends PureComponent {
       !!newProps.lastUpdate
     ) {
       const daysDiff = getDaysDiff(newProps.lastUpdate);
-      this.props.navigation.setParams({ showBadge: daysDiff >= 30 });
+      this.setState({ daysDiff });
+      this.props.navigation.setParams({ showBadge: daysDiff >= DAYS_LIMIT });
     }
   }
 
@@ -95,6 +98,7 @@ class Update extends PureComponent {
   };
 
   render() {
+    const { daysDiff } = this.state;
     return (
       <View style={styles.container}>
         <Spinner
@@ -108,9 +112,22 @@ class Update extends PureComponent {
             Esta opção atualizará o banco de dados de horários do APP.
           </Text>
           <Text>Isto pode levar alguns minutos.</Text>
-          <Text style={styles.last_text}>
-            Recomendamos fazer isto uma vez por mês!
-          </Text>
+          {daysDiff < DAYS_LIMIT && (
+            <Text style={styles.last_text}>
+              Recomendamos fazer isto uma vez a cada {DAYS_LIMIT} dias!
+            </Text>
+          )}
+          {daysDiff >= DAYS_LIMIT && (
+            <Text style={styles.last_text}>
+              Já se passaram mais de {DAYS_LIMIT} dias desde a ultima
+              atualização do banco de dados.
+            </Text>
+          )}
+          {daysDiff >= DAYS_LIMIT && (
+            <Text style={styles.last_text}>
+              Por favor, considere atualiza-lo o mais rápido possível.
+            </Text>
+          )}
           <Button
             icon={icons.button}
             backgroundColor={colors.primary_dark}
