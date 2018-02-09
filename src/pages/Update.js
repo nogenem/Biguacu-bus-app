@@ -4,15 +4,42 @@ import { connect } from "react-redux";
 import { View, Text, StyleSheet, NetInfo, Alert } from "react-native";
 import { Card, Button } from "react-native-elements";
 import Spinner from "react-native-loading-spinner-overlay";
+import Icon from "react-native-vector-icons/MaterialIcons";
 
 import { updateLines } from "../actions/lines";
 import { colors } from "../constants/styles";
 import handleErrors from "../utils/handleErrors";
 
 class Update extends PureComponent {
+  static navigationOptions = props => {
+    const { state } = props.navigation;
+    return {
+      tabBarLabel: ({ tintColor }) => (
+        <View>
+          <Text style={{ color: tintColor }}>UPDATE</Text>
+          {state.params &&
+            state.params.showBadge && (
+              <Icon
+                style={styles.icon_badge}
+                name="error"
+                size={15}
+                color="yellow"
+              />
+            )}
+        </View>
+      )
+    };
+  };
+
   state = {
     loading: false
   };
+
+  componentDidMount() {
+    // TODO: carregar last_update do banco de dados
+    // e verificar se deve mostrar badge, today - last_update >= 30dias
+    // this.props.navigation.setParams({ showBadge: true });
+  }
 
   update = async () => {
     this.setState({ loading: true });
@@ -88,6 +115,15 @@ class Update extends PureComponent {
 }
 
 Update.propTypes = {
+  // ownProps
+  navigation: PropTypes.shape({
+    state: PropTypes.shape({
+      params: PropTypes.shape({
+        showBadge: PropTypes.bool
+      })
+    }),
+    setParams: PropTypes.func
+  }).isRequired,
   // mapDispatchToProps
   updateLines: PropTypes.func.isRequired
 };
@@ -111,6 +147,11 @@ const styles = StyleSheet.create({
   },
   spinner_text: {
     color: colors.primary
+  },
+  icon_badge: {
+    position: "absolute",
+    top: -8,
+    right: -13
   }
 });
 
