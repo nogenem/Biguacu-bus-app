@@ -1,11 +1,5 @@
 import DBManager from "./DBManager";
-import {
-  ADD_LINHA,
-  UPDATE_LINHA,
-  REMOVE_LINHA_BY_COD,
-  ADD_HORARIO,
-  REMOVE_HORARIO_BY_COD
-} from "../constants/queries";
+import * as queries from "../constants/queries";
 
 /*
   Linha: cod, nome, obs, preco, tempo, updated_at
@@ -20,19 +14,19 @@ const reshapeData = (data, key = "cod") => {
 };
 
 export const getAllUpdatedAt = () =>
-  DBManager.getItems(
-    "select cod,updated_at from linha l ORDER BY l.nome ASC;"
-  ).then(resp => reshapeData(resp));
+  DBManager.getItems(queries.SELECT_LINHAS_UPDATED_AT).then(resp =>
+    reshapeData(resp)
+  );
 
 export const getAllNameAndObs = () =>
-  DBManager.getItems(
-    "select cod,nome,obs from linha l ORDER BY l.nome ASC;"
-  ).then(resp => reshapeData(resp));
+  DBManager.getItems(queries.SELECT_LINHAS_NOME_AND_OBS).then(resp =>
+    reshapeData(resp)
+  );
 
 export const getAllDepartures = () =>
-  DBManager.getItems(
-    "select saida from horario GROUP BY saida ORDER BY saida ASC;"
-  ).then(items => items.map(item => item.saida));
+  DBManager.getItems(queries.SELECT_SAIDAS).then(items =>
+    items.map(item => item.saida)
+  );
 
 const indexes = {
   Semana: 0,
@@ -41,11 +35,8 @@ const indexes = {
 };
 export const getByCod = async cod => {
   const [[line], horarios] = await Promise.all([
-    DBManager.getItems("select * from linha where cod = ?;", [cod]),
-    DBManager.getItems(
-      "select * from horario where linha_cod = ? ORDER BY saida,dia DESC, hora ASC;",
-      [cod]
-    )
+    DBManager.getItems(queries.SELECT_LINHA_BY_COD, [cod]),
+    DBManager.getItems(queries.SELECT_HORARIO_BY_LINHA_COD, [cod])
   ]);
   const data = [];
   let lastExit;
@@ -75,7 +66,7 @@ export const getByCod = async cod => {
 
 export const getByDeparture = async departure => {
   const cods = await DBManager.getItems(
-    "SELECT linha_cod FROM horario WHERE saida = ? GROUP BY linha_cod ORDER BY linha_cod;",
+    queries.SELECT_HORARIOS_LINHA_COD_BY_SAIDA,
     [departure]
   ).then(items => items.map(item => item.linha_cod));
 
@@ -90,9 +81,9 @@ export const getByDeparture = async departure => {
 };
 
 const getAddLinhaQueries = line => {
-  const queries = [];
-  queries.push([
-    ADD_LINHA,
+  const addQueries = [];
+  addQueries.push([
+    queries.INSERT_LINHA,
     [line.cod, line.nome, line.obs, line.preco, line.tempo, line.updated_at]
   ]);
   line.data.forEach(data => {
@@ -100,45 +91,48 @@ const getAddLinhaQueries = line => {
     data.weekdays.forEach(weekday => {
       const { dia } = weekday;
       weekday.schedule.forEach(hora => {
-        queries.push([ADD_HORARIO, [hora, saida, dia, line.cod]]);
+        addQueries.push([queries.INSERT_HORARIO, [hora, saida, dia, line.cod]]);
       });
     });
   });
-  return queries;
+  return addQueries;
 };
 
 const getUpdateLinhaQueries = line => {
-  const queries = [];
-  queries.push([
-    UPDATE_LINHA,
+  const updateQueries = [];
+  updateQueries.push([
+    queries.UPDATE_LINHA,
     [line.nome, line.obs, line.preco, line.tempo, line.updated_at, line.cod]
   ]);
-  queries.push([REMOVE_HORARIO_BY_COD, [line.cod]]);
+  updateQueries.push([queries.DELETE_HORARIO_BY_COD, [line.cod]]);
   line.data.forEach(data => {
     const { saida } = data;
     data.weekdays.forEach(weekday => {
       const { dia } = weekday;
       weekday.schedule.forEach(hora => {
-        queries.push([ADD_HORARIO, [hora, saida, dia, line.cod]]);
+        updateQueries.push([
+          queries.INSERT_HORARIO,
+          [hora, saida, dia, line.cod]
+        ]);
       });
     });
   });
-  return queries;
+  return updateQueries;
 };
 
-const getDeleteLinhaQueries = cod => [[REMOVE_LINHA_BY_COD, [cod]]];
+const getDeleteLinhaQueries = cod => [[queries.DELETE_LINHA_BY_COD, [cod]]];
 
 export const updateAll = lists => {
-  let queries = [];
+  let allQueries = [];
   lists.toAdd.forEach(line => {
-    queries = [...queries, ...getAddLinhaQueries(line)];
+    allQueries = [...allQueries, ...getAddLinhaQueries(line)];
   });
   lists.toUpdate.forEach(line => {
-    queries = [...queries, ...getUpdateLinhaQueries(line)];
+    allQueries = [...allQueries, ...getUpdateLinhaQueries(line)];
   });
   lists.toDelete.forEach(cod => {
-    queries = [...queries, ...getDeleteLinhaQueries(cod)];
+    allQueries = [...allQueries, ...getDeleteLinhaQueries(cod)];
   });
-  DBManager.addQueries(queries);
+  DBManager.addQueries(allQueries);
   return DBManager.executePendingQueries();
 };
