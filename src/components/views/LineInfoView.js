@@ -14,7 +14,7 @@ class LineInfoView extends PureComponent {
         <InfoText description="Linha" data={linha} />
         {!!obs && <InfoText description="Obs" data={obs} />}
         <InfoText description="Tempo de viagem" data={tempo} />
-        <InfoText description="Tarifa" data={preco} />
+        <InfoText description="Tarifa(s)" data={preco} />
         <InfoText description="Última atualização" data={updatedAt} />
       </Card>
     );

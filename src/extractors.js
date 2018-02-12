@@ -60,7 +60,17 @@ const extractLine = (resp, updated_at) => {
   // retira: "Tempo de viagem:"
   ret.tempo = getText(contentInfoDivs, 4, 16);
   // retira: "Tarifa:"
-  ret.preco = `R$ ${getText(contentInfoDivs, 6, 7)}`;
+  let tarifa = getText(contentInfoDivs, 6);
+  if (tarifa.startsWith("Tarifas:")) {
+    tarifa = tarifa.substr(10, tarifa.length);
+    tarifa = tarifa.replace(/ {2,3}/g, " ");
+    tarifa = tarifa.replace(/: /g, ": R$ ");
+    ret.preco = tarifa;
+  } else {
+    tarifa = tarifa.substr(7, tarifa.length);
+    tarifa = tarifa.replace(/ {2,3}|\t/g, "");
+    ret.preco = `R$ ${tarifa}`;
+  }
 
   // horarios
   ret.data = [];
