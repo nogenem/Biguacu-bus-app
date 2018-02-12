@@ -35,7 +35,7 @@ class Search extends PureComponent {
   };
 
   onChangeText = newText => {
-    const filter = newText.trim();
+    const filter = newText.trim().toLowerCase();
     let lines = this.props.linesNames;
 
     if (!filter) this.setState({ lines });
