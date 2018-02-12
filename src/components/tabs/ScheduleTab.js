@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
     maxWidth: 85
   },
   tab_active: {
-    borderBottomWidth: 2,
+    borderBottomWidth: 3,
     borderBottomColor: colors.primary_dark
   },
   tab_not_active: {},
