@@ -2,7 +2,7 @@ import React, { PureComponent } from "react";
 import PropTypes from "prop-types";
 import { Text, TouchableOpacity, StyleSheet } from "react-native";
 
-import { colors } from "../../constants/styles";
+import { colors, globalStyles } from "../../constants/styles";
 
 class ScheduleTab extends PureComponent {
   onPress = () => {
@@ -47,11 +47,12 @@ const styles = StyleSheet.create({
     borderBottomColor: colors.primary_dark
   },
   tab_not_active: {},
-  tab_text: {
-    textAlign: "center",
-    color: "white",
-    fontWeight: "bold"
-  }
+  tab_text: StyleSheet.flatten([
+    {
+      textAlign: "center"
+    },
+    globalStyles.primary_text
+  ])
 });
 
 export default ScheduleTab;

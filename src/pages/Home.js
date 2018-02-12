@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import { View, Text, StyleSheet } from "react-native";
 import Spinner from "react-native-loading-spinner-overlay";
 
-import { colors } from "../constants/styles";
+import { colors, globalStyles } from "../constants/styles";
 import { DEFAULT_DEPARTURE } from "../constants/defaults";
 import HomePicker from "../components/HomePicker";
 import { loadDepartures, loadDepartureLines } from "../actions/departures";
@@ -69,7 +69,7 @@ class Home extends PureComponent {
     const { departures, navigation } = this.props;
     const { currentDeparture } = this.state;
     return (
-      <View style={styles.outerContainer}>
+      <View style={globalStyles.flex1}>
         <Spinner
           visible={this.state.loading}
           textContent="Carregando..."
@@ -90,24 +90,23 @@ class Home extends PureComponent {
 }
 
 const styles = StyleSheet.create({
-  outerContainer: {
-    flex: 1
-  },
-  subheader: {
-    flex: 0,
-    justifyContent: "center",
-    alignItems: "center",
-    height: 40,
-    backgroundColor: colors.primary_light,
-    borderTopColor: "white",
-    borderTopWidth: 2
-  },
-  subheader_text: {
-    textAlign: "center",
-    color: "white",
-    fontWeight: "bold",
-    fontSize: 18
-  },
+  subheader: StyleSheet.flatten([
+    {
+      flex: 0,
+      height: 40,
+      backgroundColor: colors.primary_light,
+      borderTopColor: "white",
+      borderTopWidth: 2
+    },
+    globalStyles.flexCenter
+  ]),
+  subheader_text: StyleSheet.flatten([
+    {
+      textAlign: "center",
+      fontSize: 18
+    },
+    globalStyles.primary_text
+  ]),
   spinner_text: {
     color: colors.primary
   }

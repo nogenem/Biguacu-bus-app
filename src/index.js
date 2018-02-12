@@ -1,11 +1,10 @@
 import React, { Component } from "react";
 import { Provider } from "react-redux";
-import { StatusBar, View, StyleSheet } from "react-native";
+import { StatusBar, View } from "react-native";
 
-import { colors } from "./constants/styles";
+import { colors, globalStyles } from "./constants/styles";
 import store from "./store";
 import App from "./App";
-
 import DBManager from "./database/DBManager";
 
 class Main extends Component {
@@ -16,7 +15,7 @@ class Main extends Component {
   render() {
     return (
       <Provider store={store}>
-        <View style={styles.container}>
+        <View style={globalStyles.flex1}>
           <StatusBar
             backgroundColor={colors.primary}
             barStyle="light-content"
@@ -27,11 +26,5 @@ class Main extends Component {
     );
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1
-  }
-});
 
 export default Main;

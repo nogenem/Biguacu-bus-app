@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { View, Text, StyleSheet } from "react-native";
 import Spinner from "react-native-loading-spinner-overlay";
 
-import { colors } from "../constants/styles";
+import { colors, globalStyles } from "../constants/styles";
 import LineHeaderIcon from "../components/icons/LineHeaderIcon";
 import LineSubHeaderIcon from "../components/icons/LineSubHeaderIcon";
 import LineInfoView from "../components/views/LineInfoView";
@@ -28,7 +28,7 @@ class Line extends PureComponent {
       headerTitle: <HeaderTitle nome={params.nome} obs={params.obs} />,
       headerBackTitle: "Voltar",
       headerBackTitleStyle: styles.headerBackTitle,
-      headerTintColor: "white",
+      headerTintColor: colors.primary_text,
       headerStyle: styles.header,
       headerRight: <LineHeaderIcon setParams={setParams} mode={params.mode} />
     };
@@ -76,7 +76,7 @@ class Line extends PureComponent {
 
     const lineData = line.data[dataIndex];
     return (
-      <View style={styles.outerContainer}>
+      <View style={globalStyles.flex1}>
         <View style={styles.subHeader}>
           <Text style={styles.subHeaderText}>
             {params.mode === "info" ? "Informações" : lineData.saida}
@@ -99,37 +99,38 @@ class Line extends PureComponent {
 
 const styles = StyleSheet.create({
   header: { backgroundColor: colors.primary },
-  headerBackTitle: { color: "white" },
-  headerTitle: {
-    fontSize: 16,
-    fontWeight: "bold",
-    color: "white"
-  },
-  headerSubtitle: {
-    fontSize: 12,
-    fontWeight: "bold",
-    color: "white"
-  },
-  outerContainer: {
-    flex: 1
-  },
-  subHeader: {
-    height: 40,
-    flex: 0,
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-    borderTopColor: "white",
-    borderTopWidth: 2,
-    backgroundColor: colors.primary_light
-  },
-  subHeaderText: {
-    flexGrow: 1,
-    textAlign: "center",
-    color: "white",
-    fontWeight: "bold",
-    fontSize: 18
-  },
+  headerBackTitle: { color: colors.primary_text },
+  headerTitle: StyleSheet.flatten([
+    {
+      fontSize: 16
+    },
+    globalStyles.primary_text
+  ]),
+  headerSubtitle: StyleSheet.flatten([
+    {
+      fontSize: 12
+    },
+    globalStyles.primary_text
+  ]),
+  subHeader: StyleSheet.flatten([
+    {
+      height: 40,
+      flex: 0,
+      flexDirection: "row",
+      borderTopColor: "white",
+      borderTopWidth: 2,
+      backgroundColor: colors.primary_light
+    },
+    globalStyles.flexCenter
+  ]),
+  subHeaderText: StyleSheet.flatten([
+    {
+      flexGrow: 1,
+      textAlign: "center",
+      fontSize: 18
+    },
+    globalStyles.primary_text
+  ]),
   spinner_text: {
     color: colors.primary
   }

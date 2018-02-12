@@ -5,11 +5,10 @@ import { View, StyleSheet, FlatList } from "react-native";
 import { List, SearchBar } from "react-native-elements";
 
 import { loadLinesNameAndObs } from "../actions/lines";
-
 import { getLinesNameAndObs, getLinesLoaded } from "../reducers/lines";
-
 import SearchListItem from "../components/list_items/SearchListItem";
 import handleErrors from "../utils/handleErrors";
+import { globalStyles } from "../constants/styles";
 
 class Search extends PureComponent {
   state = {
@@ -59,7 +58,7 @@ class Search extends PureComponent {
 
   render() {
     return (
-      <View style={styles.container}>
+      <View style={globalStyles.flex1}>
         <SearchBar
           onChangeText={this.onChangeText}
           placeholder="Search..."
@@ -96,9 +95,6 @@ Search.propTypes = {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1
-  },
   list: {
     marginTop: 0
   }

@@ -9,7 +9,7 @@ import Icon from "react-native-vector-icons/MaterialIcons";
 import { updateLines } from "../actions/lines";
 import { loadUserData, setLastUpdate } from "../actions/userData";
 import { getLastUpdate } from "../reducers/userData";
-import { colors } from "../constants/styles";
+import { colors, globalStyles } from "../constants/styles";
 import { DEFAULT_LAST_UPDATE_DAYS_LIMIT as DAYS_LIMIT } from "../constants/defaults";
 import handleErrors from "../utils/handleErrors";
 import { getDaysDiff } from "../utils/dateUtils";
@@ -100,7 +100,7 @@ class Update extends PureComponent {
   render() {
     const { daysDiff } = this.state;
     return (
-      <View style={styles.container}>
+      <View style={globalStyles.flex1}>
         <Spinner
           visible={this.state.loading}
           textContent="Carregando..."
@@ -168,9 +168,6 @@ const icons = {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1
-  },
   last_text: {
     marginTop: 10,
     fontWeight: "bold"

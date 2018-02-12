@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { View, Text, Picker, StyleSheet } from "react-native";
 
 import { DEFAULT_DEPARTURE } from "../constants/defaults";
+import { globalStyles } from "../constants/styles";
 
 class HomePicker extends PureComponent {
   state = {
@@ -23,7 +24,7 @@ class HomePicker extends PureComponent {
         <Picker
           selectedValue={selectedValue}
           onValueChange={this.onValueChange}
-          style={styles.picker}
+          style={globalStyles.flex1}
           itemStyle={styles.picker_item}
         >
           {departures.map((dep, idx) => (
@@ -36,26 +37,24 @@ class HomePicker extends PureComponent {
 }
 
 const styles = StyleSheet.create({
-  picker_container: {
-    flex: 0,
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-    height: 45,
-    backgroundColor: "#f1f1f1",
-    padding: 3,
-    borderBottomWidth: 1,
-    borderBottomColor: "#727475",
-    borderTopWidth: 1,
-    borderTopColor: "#727475"
-  },
+  picker_container: StyleSheet.flatten([
+    {
+      flex: 0,
+      flexDirection: "row",
+      height: 45,
+      backgroundColor: "#f1f1f1",
+      padding: 3,
+      borderBottomWidth: 1,
+      borderBottomColor: "#727475",
+      borderTopWidth: 1,
+      borderTopColor: "#727475"
+    },
+    globalStyles.flexCenter
+  ]),
   text_saida: {
     fontSize: 14,
     fontWeight: "200",
     color: "black"
-  },
-  picker: {
-    flex: 1
   }
 });
 

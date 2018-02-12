@@ -2,7 +2,7 @@ import React, { PureComponent } from "react";
 import PropTypes from "prop-types";
 import { View, StyleSheet } from "react-native";
 
-import { colors } from "../../constants/styles";
+import { colors, globalStyles } from "../../constants/styles";
 import ScheduleTab from "./ScheduleTab";
 import ScheduleTabContent from "./ScheduleTabContent";
 
@@ -35,7 +35,7 @@ class ScheduleTabs extends PureComponent {
     const { data } = this.props;
     const currentData = data.weekdays[tabIndex];
     return (
-      <View style={styles.container}>
+      <View style={globalStyles.flex1}>
         <ScheduleTabContent
           dayOfWeek={currentData.dia}
           schedule={currentData.schedule}
@@ -57,17 +57,15 @@ class ScheduleTabs extends PureComponent {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1
-  },
-  tabs: {
-    flex: 0,
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-    height: 45,
-    backgroundColor: colors.primary_light
-  }
+  tabs: StyleSheet.flatten([
+    {
+      flex: 0,
+      flexDirection: "row",
+      height: 45,
+      backgroundColor: colors.primary_light
+    },
+    globalStyles.flexCenter
+  ])
 });
 
 ScheduleTabs.propTypes = {
