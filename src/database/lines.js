@@ -33,38 +33,7 @@ const indexes = {
   Sábado: 1,
   Domingo: 2
 };
-export const getByCod = async cod => {
-  const [[line], horarios] = await Promise.all([
-    DBManager.getItems(queries.SELECT_LINHA_BY_COD, [cod]),
-    DBManager.getItems(queries.SELECT_HORARIO_BY_LINHA_COD, [cod])
-  ]);
-  const data = [];
-  let lastExit;
-  let lastDay;
-  let lastSchedule;
-  let lastIndex = 0;
-  horarios.forEach(horario => {
-    if (lastExit !== horario.saida) {
-      lastExit = horario.saida;
-      lastDay = undefined;
-      data.push({ saida: lastExit, weekdays: [] });
-    }
-    if (lastDay !== horario.dia) {
-      lastDay = horario.dia;
-      lastIndex = indexes[lastDay];
-      data[data.length - 1].weekdays[lastIndex] = {
-        dia: lastDay,
-        schedule: []
-      };
-    }
-    lastSchedule = data[data.length - 1].weekdays[lastIndex];
-    lastSchedule.schedule.push(horario.hora);
-  });
-  line.data = data;
-  return reshapeData([line]);
-};
-
-const buildLineData = (line, horarios, index) => {
+const buildLineData = (line, horarios, index = 0) => {
   const newLine = { ...line };
   const data = [];
 
@@ -96,6 +65,16 @@ const buildLineData = (line, horarios, index) => {
   }
   newLine.data = data;
   return [reshapeData([newLine]), i];
+};
+
+export const getByCod = async cod => {
+  const [[line], horarios] = await Promise.all([
+    DBManager.getItems(queries.SELECT_LINHA_BY_COD, [cod]),
+    DBManager.getItems(queries.SELECT_HORARIO_BY_LINHA_COD, [cod])
+  ]);
+
+  const [lineData] = buildLineData(line, horarios);
+  return lineData;
 };
 
 export const getByDeparture = async departure => {
