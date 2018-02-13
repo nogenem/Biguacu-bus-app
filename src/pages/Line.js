@@ -57,7 +57,7 @@ class Line extends PureComponent {
 
   onSubHeaderIconPress = () => {
     this.setState(old => ({
-      dataIndex: (old.dataIndex + 1) % 2
+      dataIndex: (old.dataIndex + 1) % old.line.data.length
     }));
   };
 
