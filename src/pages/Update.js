@@ -112,22 +112,28 @@ class Update extends PureComponent {
             Esta opção atualizará o banco de dados de horários do APP.
           </Text>
           <Text>Isto pode levar alguns minutos.</Text>
-          {daysDiff < DAYS_LIMIT && (
-            <Text style={styles.last_text}>
-              Recomendamos fazer isto uma vez a cada {DAYS_LIMIT} dias!
-            </Text>
-          )}
-          {daysDiff >= DAYS_LIMIT && (
-            <Text style={styles.last_text}>
-              Já se passaram mais de {DAYS_LIMIT} dias desde a ultima
-              atualização do banco de dados.
-            </Text>
-          )}
-          {daysDiff >= DAYS_LIMIT && (
-            <Text style={styles.last_text}>
-              Por favor, considere atualiza-lo o mais rápido possível.
-            </Text>
-          )}
+
+          <View style={styles.container}>
+            {daysDiff > 1 &&
+              daysDiff < DAYS_LIMIT && (
+                <Text style={styles.bold}>
+                  Última atualização foi feita {daysDiff} dias atrás.
+                </Text>
+              )}
+
+            {daysDiff >= DAYS_LIMIT && (
+              <Text style={styles.bold}>
+                Já se passaram mais de {DAYS_LIMIT} dias desde a última
+                atualização do banco de dados.
+              </Text>
+            )}
+
+            {daysDiff >= DAYS_LIMIT && (
+              <Text style={styles.bold}>
+                Por favor, considere atualiza-lo o mais rápido possível.
+              </Text>
+            )}
+          </View>
           <Button
             icon={icons.button}
             backgroundColor={colors.primary_dark}
@@ -168,8 +174,10 @@ const icons = {
 };
 
 const styles = StyleSheet.create({
-  last_text: {
-    marginTop: 10,
+  container: {
+    marginTop: 10
+  },
+  bold: {
     fontWeight: "bold"
   },
   button: {
