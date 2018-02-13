@@ -10,6 +10,12 @@ export const SELECT_HORARIO_BY_LINHA_COD =
 export const SELECT_HORARIOS_LINHA_COD_BY_SAIDA =
   "SELECT linha_cod FROM horario WHERE saida = ? GROUP BY linha_cod ORDER BY linha_cod;";
 export const SELECT_USER_DATA = "SELECT * FROM user_data;";
+// PS: não achei um jeito para usar '?' com 'IN'...
+export const SELECT_LINHAS_BY_COD_IN_CODS = cods =>
+  `SELECT * FROM linha WHERE cod IN (${cods.toString()}) ORDER BY cod;`;
+export const SELECT_HORARIOS_BY_LINHA_COD_IN_CODS = cods =>
+  `SELECT * FROM horario WHERE linha_cod IN (${cods.toString()}) 
+    ORDER BY linha_cod, saida, dia DESC, hora ASC;`;
 
 export const INSERT_LINHA =
   "INSERT INTO linha (cod,nome,obs,preco,tempo,updated_at) VALUES (?,?,?,?,?,?);";
